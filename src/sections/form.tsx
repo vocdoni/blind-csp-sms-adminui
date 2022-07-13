@@ -4,12 +4,10 @@ import {
   FormLabel,
   Input,
   Stack,
-  Button,
   useColorModeValue,
   useToast,
   ToastId,
   FormErrorMessage,
-  HStack,
   Heading,
   Divider,
 } from '@chakra-ui/react'
@@ -20,27 +18,13 @@ import FakePin from '../components/FakePin'
 import CreateUser from '../components/CreateUser'
 import { API_BASE } from '../constants'
 import Queries from '../components/Queries'
-
-type Election = {
-  electionId: string
-  remainingAttempts: number
-  consumed: boolean
-  challenge: number
-}
-
-type UserData = {
-  userID: string
-  elections: Election[]
-  extraData: string
-  phone: {
-    country_code: number
-    national_number: number
-  }
-}
+import { UserData } from '../types'
+import UserDataDisplay from '../components/UserDataDisplay'
+import UserActions from '../components/UserActions'
 
 const emptyUser : UserData = {
   userID: '',
-  elections: [],
+  elections: {},
   extraData: '',
   phone: {
     country_code: 0,
@@ -57,8 +41,6 @@ export default function Form() {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const client = useRef<AxiosInstance>()
   const [userError, setUserError] = useState<string|null>(null)
-  const [userIsValid, setUserIsValid] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
   const [userData, setUserData] = useState<UserData>(emptyUser)
 
   const showError = (title: string, description?: string) => {
@@ -76,7 +58,9 @@ export default function Form() {
     })
   }
 
-  const updateUser = (user: string) => {
+  const storeUser = (user: string) => {
+    setUserError(null)
+    setUserData(emptyUser)
     if (!user.length) {
       return
     }
@@ -85,13 +69,10 @@ export default function Form() {
       clearTimeout(timeoutRef.current)
     }
     timeoutRef.current = setTimeout(() => {
-      setUserError(null)
       client.current?.get(`/user/${user}`)
         .then(({data}: {data: UserData}) => {
-          setUserIsValid(true)
           setUserData(data)
         }).catch(() => {
-          setUserIsValid(false)
           setUserError('Invalid user hash')
         })
     }, 500)
@@ -130,7 +111,7 @@ export default function Form() {
     }, 500)
   }
 
-  const disabled = token.length === 0 || (user.length === 0 || !userIsValid)
+  const disabled = token.length === 0 || (user.length === 0 || !userData)
 
   return (
     <Stack mx={'auto'} maxW={'xl'} py={12} px={6}>
@@ -160,6 +141,12 @@ export default function Form() {
             <Stack spacing={6} mt={6}>
               <Divider />
               <Heading size='lg'>User actions</Heading>
+              <Queries
+                client={client.current as AxiosInstance}
+                showError={showError}
+                setUser={setUser}
+                setUserData={setUserData}
+              />
               <FormControl id='user' isInvalid={userError !== null}>
                 <FormLabel>User (hash)</FormLabel>
                 <Input
@@ -167,84 +154,36 @@ export default function Form() {
                   disabled={client.current === null}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setUser(e.target.value)
-                    updateUser(e.target.value)
+                    storeUser(e.target.value)
                   }}
                   value={user}
                 />
                 <FormErrorMessage>{userError}</FormErrorMessage>
               </FormControl>
-              <Queries />
               <If condition={!disabled}>
                 <Then>
-                  <HStack w='full' alignItems='stretch' display='flex'>
-                    <Button
-                      disabled={disabled || loading}
-                      isLoading={loading}
-                      w='full'
-                      onClick={() => {
-                        setLoading(true)
-                        ;(async () => {
-                          const [ election ] = userData.elections
-                          const attempts = 5 - election.remainingAttempts
-                          let successful = 0
-                          if (!attempts) {
-                            showSuccess('User already has 5 attempts')
-                            return setLoading(false)
-                          }
-                          for (let i = 0; i < attempts; i++) {
-                            await client.current?.get(`/addAttempt/${user}/${election.electionId}`)
-                              .then(() => {
-                                successful++
-                              })
-                              .catch((e) => {
-                                console.error(`error adding attempt to user ${user}:`, e)
-                                showError('Error adding attempt', 'Check console for more details')
-                              })
-                          }
-                          if (successful === attempts) {
-                            showSuccess('SMS attempts reset successfully')
-                          }
-                          setLoading(false)
-                        })()
-                      }}>
-                      Reset 5 SMS limit
-                    </Button>
-                    <Button
-                      disabled={disabled || loading}
-                      isLoading={loading}
-                      w='full'
-                      onClick={() => {
-                        setLoading(true)
-                        ;(async () => {
-                          const [ election ] = userData.elections
-                          if (!election) {
-                            showSuccess('User has no access to any election')
-                            return setLoading(false)
-                          }
-                          if (!election.consumed) {
-                            showSuccess('Status was already set to NOT consumed')
-                            return setLoading(false)
-                          }
-                          await client.current?.get(`/setConsumed/${user}/${election.electionId}/false`).catch((e) => {
-                            console.error(`error setting consumed to user ${user}:`, e)
-                            showError('Sorry, couldn\'t do that', 'Check console for more details')
-                          })
-                          showSuccess('SMS attempts reset successfully')
-                          setLoading(false)
-                        })()
-                      }}>
-                      Set NOT consumed
-                    </Button>
-                  </HStack>
+                  <UserDataDisplay data={userData} />
+                </Then>
+              </If>
+              <If condition={!disabled}>
+                <Then>
+                  <UserActions
+                    showError={showError}
+                    showSuccess={showSuccess}
+                    client={client.current as AxiosInstance}
+                    user={userData}
+                    setUserData={setUserData}
+                  />
                   <FakePin
                     showError={showError}
-                    client={client.current}
+                    client={client.current as AxiosInstance}
+                    user={userData}
                   />
                 </Then>
               </If>
               <CreateUser
                 showError={showError}
-                client={client.current}
+                client={client.current as AxiosInstance}
               />
             </Stack>
           </Then>

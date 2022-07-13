@@ -1,18 +1,13 @@
 import { Divider, Heading, VStack } from '@chakra-ui/react'
-import UserQuery from './UserQuery'
+import { QueriesProps } from '../types'
+import FindUserByExtraData from './FindUserByExtraData'
 
-type QueriesProps = {}
-
-const Queries = () => {
+const Queries = (props: QueriesProps) => {
   return (
     <>
-      <VStack spacing={6} align='left'>
-        <Divider />
-        <Heading size='md'>Queries</Heading>
-        <Heading size='sm'>Get 2022 user</Heading>
-        <UserQuery />
-        <Heading size='sm'>Get 2021 user</Heading>
-        <UserQuery />
+      <VStack spacing={2} align='left'>
+        <Heading size='sm'>Find user</Heading>
+        <FindUserByExtraData {...props} />
         <Divider />
       </VStack>
     </>

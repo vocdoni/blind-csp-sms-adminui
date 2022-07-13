@@ -3,7 +3,7 @@ import { FormControl, Heading, HStack, IconButton, Input } from '@chakra-ui/reac
 import { useRef, useState } from 'react'
 import { FakePinProps } from '../types'
 
-const FakePin = ({showError}: FakePinProps) => {
+const FakePin = ({showError, user}: FakePinProps) => {
   const codeRef = useRef<HTMLInputElement>(null)
   const pinRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -21,7 +21,6 @@ const FakePin = ({showError}: FakePinProps) => {
     }
 
     setLoading(true)
-
   }
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
