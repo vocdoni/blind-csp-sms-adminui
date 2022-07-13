@@ -24,7 +24,6 @@ const FindUserByExtraData = ({client, showError, ...props} : UserQueryProps) => 
     setLoading(true)
     try {
       const results = await client.post('/search', {term})
-      console.log('received results:', results)
       setResults(results.data.users)
     } catch (e) {
       showError('Error searching member', 'Check console for details')

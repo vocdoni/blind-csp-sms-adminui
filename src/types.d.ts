@@ -4,8 +4,11 @@ type ShowError = (text: string, description?: string) => void
 type ShowSuccess = (text: string, description?: string) => void
 type FakePinProps = {
   showError: ShowError
+  showSuccess: ShowSuccess
   client: AxiosInstance
   user: UserData
+  setUser: SetUser
+  setUserData: SetUserData
 }
 type CreateUserProps = {
   showError: ShowError

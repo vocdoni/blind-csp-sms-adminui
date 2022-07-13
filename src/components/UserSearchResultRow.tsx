@@ -21,6 +21,11 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, setUserData}: 
     return null
   }
 
+  const onClick = () => {
+    setUserHash(hash)
+    setUserData(user)
+  }
+
   const styles = {
     cursor: 'pointer',
     '.results-list &:nth-child(odd)': {
@@ -36,11 +41,7 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, setUserData}: 
   }
 
   return (
-    <Box p={3} sx={styles} onClick={() => {
-      setUserHash(hash)
-      console.log('setting user data to be', user)
-      setUserData(user)
-    }}>
+    <Box p={3} sx={styles} onClick={onClick}>
       <VStack align='left'>
         <HStack>
           <Text overflow='hidden' textOverflow='ellipsis' w='full' whiteSpace='pre' title={user.userID}>

@@ -51,10 +51,11 @@ export default function Form() {
     })
   }
 
-  const showSuccess = (title: string) => {
+  const showSuccess = (title: string, description?: string) => {
     toastRef.current = toast({
       status: 'success',
       title,
+      description,
     })
   }
 
@@ -178,6 +179,9 @@ export default function Form() {
                     showError={showError}
                     client={client.current as AxiosInstance}
                     user={userData}
+                    setUser={setUser}
+                    setUserData={setUserData}
+                    showSuccess={showSuccess}
                   />
                 </Then>
               </If>

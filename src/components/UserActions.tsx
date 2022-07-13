@@ -14,6 +14,11 @@ type UserActionsProps = {
 const UserActions = ({client, user, showError, showSuccess, setUserData}: UserActionsProps) => {
   const [loading, setLoading] = useState<boolean>(false)
 
+  if (!user || !user.elections || (user.elections && !Object.values(user.elections).length)) {
+    // actions take the very first election, we should not show em' unless an election is found
+    return null
+  }
+
   return (
     <HStack w='full' alignItems='stretch' display='flex'>
       <Button
