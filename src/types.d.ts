@@ -12,6 +12,7 @@ type FakePinProps = {
 }
 type CreateUserProps = {
   showError: ShowError
+  showSuccess: ShowSuccess
   client: AxiosInstance
 }
 type Election = {

@@ -15,7 +15,6 @@ import axios, { AxiosInstance } from 'axios'
 import React, { useRef, useState } from 'react'
 import { If, Then } from 'react-if'
 import FakePin from '../components/FakePin'
-import CreateUser from '../components/CreateUser'
 import { API_BASE } from '../constants'
 import Queries from '../components/Queries'
 import { UserData } from '../types'
@@ -169,26 +168,22 @@ export default function Form() {
               <If condition={!disabled}>
                 <Then>
                   <UserActions
-                    showError={showError}
-                    showSuccess={showSuccess}
                     client={client.current as AxiosInstance}
                     user={userData}
                     setUserData={setUserData}
+                    showError={showError}
+                    showSuccess={showSuccess}
                   />
                   <FakePin
-                    showError={showError}
                     client={client.current as AxiosInstance}
                     user={userData}
                     setUser={setUser}
                     setUserData={setUserData}
+                    showError={showError}
                     showSuccess={showSuccess}
                   />
                 </Then>
               </If>
-              <CreateUser
-                showError={showError}
-                client={client.current as AxiosInstance}
-              />
             </Stack>
           </Then>
         </If>
