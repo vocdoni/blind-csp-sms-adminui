@@ -88,9 +88,9 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
           aria-label='Generate new pair'
           title='Generate new pair'
           onClick={generateRandomCredentials}
-          as={RepeatIcon}
+          icon={<RepeatIcon />}
           ml={4}
-          size='xs'
+          size='sm'
         />
       </Heading>
       <HStack>
@@ -113,10 +113,9 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
         <IconButton
           aria-label='create'
           onClick={setNewCredentials}
-          as={PlusSquareIcon}
+          icon={<PlusSquareIcon />}
           isLoading={loading}
           disabled={loading}
-          size='xs'
         />
       </HStack>
     </>

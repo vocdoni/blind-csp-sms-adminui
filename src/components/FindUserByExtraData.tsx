@@ -60,10 +60,9 @@ const FindUserByExtraData = ({client, showError, ...props} : UserQueryProps) => 
         <IconButton
           aria-label='create'
           onClick={makeQuery}
-          as={SearchIcon}
+          icon={<SearchIcon />}
           isLoading={loading}
           disabled={loading}
-          size='xs'
         />
       </HStack>
       <If condition={results && results.length > 0}>
