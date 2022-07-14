@@ -24,6 +24,7 @@ import UserActions from '../components/UserActions'
 import { API_BASE } from '../constants'
 import { UserData } from '../types'
 import { enterCallback } from '../utils'
+import PhoneUpdate from '../components/PhoneUpdate'
 
 const emptyUser : UserData = {
   userID: '',
@@ -236,6 +237,13 @@ export default function Form() {
               <If condition={!disabled}>
                 <Then>
                   <UserActions
+                    client={client.current as AxiosInstance}
+                    user={userData}
+                    setUserData={setUserData}
+                    showError={showError}
+                    showSuccess={showSuccess}
+                  />
+                  <PhoneUpdate
                     client={client.current as AxiosInstance}
                     user={userData}
                     setUserData={setUserData}

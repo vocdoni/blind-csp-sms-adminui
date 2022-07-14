@@ -51,3 +51,11 @@ type QueriesProps = UserQueryProps
 type UserSearchResultRowProps = Omit<UserQueryProps, 'clearRef'> & {
   hash: string
 }
+
+type PhoneNumberProps = {
+  client: AxiosInstance
+  showError: ShowError
+  showSuccess: ShowSuccess
+  user: UserData
+  setUserData: SetUserData
+}
