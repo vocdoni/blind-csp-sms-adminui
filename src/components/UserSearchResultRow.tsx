@@ -28,7 +28,7 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, setUserData}: 
 
   const styles = {
     cursor: 'pointer',
-    '.results-list &:nth-child(odd)': {
+    '.results-list &:nth-of-type(odd)': {
       backgroundColor: colorMode === 'dark'
         ? 'var(--chakra-colors-gray-800)'
         : 'var(--chakra-colors-gray-50)',
