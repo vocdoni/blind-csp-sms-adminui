@@ -17,7 +17,7 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
     if (!codeRef.current || !pinRef.current) {
       return showError('try again')
     }
-    codeRef.current.value = getRandDigits()
+    codeRef.current.value = getRandDigits(7)
     pinRef.current.value = getRandDigits(4)
   }
 
