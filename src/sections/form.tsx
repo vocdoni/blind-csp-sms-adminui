@@ -1,3 +1,4 @@
+import { DeleteIcon } from '@chakra-ui/icons'
 import {
   Box,
   FormControl,
@@ -13,15 +14,16 @@ import {
   Button,
 } from '@chakra-ui/react'
 import axios, { AxiosInstance } from 'axios'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { If, Then } from 'react-if'
+
 import FakePin from '../components/FakePin'
-import { API_BASE } from '../constants'
 import Queries from '../components/Queries'
-import { UserData } from '../types'
 import UserDataDisplay from '../components/UserDataDisplay'
 import UserActions from '../components/UserActions'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { API_BASE } from '../constants'
+import { UserData } from '../types'
+import { enterCallback } from '../utils'
 
 const emptyUser : UserData = {
   userID: '',
@@ -35,6 +37,7 @@ const emptyUser : UserData = {
 
 export default function Form() {
   const tokenRef = useRef<HTMLInputElement>(null)
+  const baseRef = useRef<HTMLInputElement>(null)
   const clearRef = useRef<HTMLButtonElement>(null)
   const toastRef = useRef<ToastId>()
   const toast = useToast()
@@ -44,22 +47,23 @@ export default function Form() {
   const client = useRef<AxiosInstance>()
   const [userError, setUserError] = useState<string|null>(null)
   const [userData, setUserData] = useState<UserData>(emptyUser)
+  const [apiBase, setApiBase] = useState<string>('')
 
-  const showError = (title: string, description?: string) => {
+  const showError = useCallback((title: string, description?: string) => {
     toastRef.current = toast({
       status: 'error',
       title,
       description,
     })
-  }
+  }, [toast])
 
-  const showSuccess = (title: string, description?: string) => {
+  const showSuccess = useCallback((title: string, description?: string) => {
     toastRef.current = toast({
       status: 'success',
       title,
       description,
     })
-  }
+  }, [toast])
 
   const storeUser = (user: string) => {
     setUserError(null)
@@ -101,12 +105,12 @@ export default function Form() {
     }
 
     timeoutRef.current = setTimeout(() => {
-      axios.get(`${API_BASE}/users`, {headers: {Authorization: `Bearer ${tokenRef.current?.value}`}})
+      axios.get(`${apiBase}/users`, {headers: {Authorization: `Bearer ${tokenRef.current?.value}`}})
         .then(() => {
           setToken(tokenRef.current?.value as string)
           showSuccess('Token is valid')
           client.current = axios.create({
-            baseURL: API_BASE,
+            baseURL: apiBase,
             headers: {
               Authorization: `Bearer ${tokenRef.current?.value}`,
             },
@@ -119,30 +123,77 @@ export default function Form() {
     }, 500)
   }
 
+  const saveAPIBase = useCallback(() => {
+    if (!baseRef.current) {
+      return showError('try again')
+    }
+
+    const base = baseRef.current.value
+    if (!base.length) {
+      setApiBase('')
+      return
+    }
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      axios.get(base)
+        .catch((e) => {
+          switch (e.request.status) {
+            case 405:
+              showSuccess('API base seems valid')
+              setApiBase(base)
+              break
+            default:
+              setApiBase('')
+              showError('invalid API base')
+          }
+        })
+    }, 500)
+  }, [showError, showSuccess])
+
+  useEffect(() => {
+    if (apiBase.length > 0) return
+    saveAPIBase()
+  }, [apiBase, saveAPIBase])
+
   const disabled = token.length === 0 || (user.length === 0 || !userData)
 
   return (
-    <Stack mx={'auto'} maxW={'xl'} py={12} px={6}>
+    <Stack mx={'auto'} maxW={'xl'} px={6}>
       <Box
         rounded={'lg'}
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow={'lg'}
-        p={8}>
+        p={8}
+        pt={6}
+      >
         <Stack spacing={6}>
-            <FormControl id='token'>
-              <FormLabel>Token</FormLabel>
-              <Input
-                type='text'
-                ref={tokenRef}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key !== 'Enter') {
-                    return
-                  }
-                  saveToken()
-                }}
-                onChange={saveToken}
-              />
-            </FormControl>
+          <FormControl id='token'>
+            <FormLabel>API base</FormLabel>
+            <Input
+              type='text'
+              ref={baseRef}
+              defaultValue={API_BASE}
+              onKeyUp={(e) => enterCallback(e, saveAPIBase)}
+              onChange={saveAPIBase}
+            />
+          </FormControl>
+          <If condition={apiBase.length > 0}>
+            <Then>
+              <FormControl id='token'>
+                <FormLabel>Token</FormLabel>
+                <Input
+                  type='text'
+                  ref={tokenRef}
+                  onKeyUp={(e) => enterCallback(e, saveToken)}
+                  onChange={saveToken}
+                />
+              </FormControl>
+            </Then>
+          </If>
         </Stack>
         <If condition={token.length !== 0}>
           <Then>

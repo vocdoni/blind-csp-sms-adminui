@@ -3,6 +3,7 @@ import { FormControl, HStack, IconButton, Input, Tag, VStack } from '@chakra-ui/
 import { useEffect, useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
 import { UserQueryProps } from '../types'
+import { enterCallback } from '../utils'
 import UserSearchResultRow from './UserSearchResultRow'
 
 const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQueryProps) => {
@@ -49,12 +50,6 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
     setLoading(false)
   }
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return
-
-    makeQuery()
-  }
-
   return (
     <>
       <HStack>
@@ -63,7 +58,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
             type='date'
             ref={birthdateRef}
             title='Birthdate'
-            onKeyUp={handleKeyUp}
+            onKeyUp={(e) => enterCallback(e, makeQuery)}
           />
         </FormControl>
         <FormControl id='member'>
@@ -71,7 +66,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
             type='text'
             placeholder={`member id, birthdate or phone number`}
             ref={memberRef}
-            onKeyUp={handleKeyUp}
+            onKeyUp={(e) => enterCallback(e, makeQuery)}
           />
         </FormControl>
         <IconButton
