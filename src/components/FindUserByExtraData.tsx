@@ -1,7 +1,7 @@
 import { SearchIcon } from '@chakra-ui/icons'
-import { FormControl, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
+import { FormControl, HStack, IconButton, Input, Tag, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { If, Then } from 'react-if'
+import { Else, If, Then } from 'react-if'
 import { UserQueryProps } from '../types'
 import UserSearchResultRow from './UserSearchResultRow'
 
@@ -10,6 +10,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
   const [eventIsSet, setEventIsSet] = useState<boolean>(false)
   const memberRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [loaded, setLoaded] = useState<boolean>(false)
   const [results, setResults] = useState<string[]>([])
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
     setEventIsSet(true)
     clearRef.current.addEventListener('click', (e) =>  {
       setResults([])
+      setLoaded(false)
 
       if (!memberRef.current) return
       memberRef.current.value = ''
@@ -25,6 +27,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
   }, [clearRef.current, eventIsSet])
 
   const makeQuery = async () => {
+    setLoaded(false)
     if (!birthdateRef.current || !memberRef.current) {
       return showError('try again')
     }
@@ -38,6 +41,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
     try {
       const results = await client.post('/search', {term})
       setResults(results.data.users)
+      setLoaded(true)
     } catch (e) {
       showError('Error searching member', 'Check console for details')
       console.error(e)
@@ -78,7 +82,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
           disabled={loading}
         />
       </HStack>
-      <If condition={results && results.length > 0}>
+      <If condition={loaded && results && results.length > 0}>
         <Then>
           {() => (
               <VStack align='left' className='results-list'>
@@ -97,6 +101,13 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
             )
           }
         </Then>
+        <Else>
+          <If condition={(loaded && !results) || (loaded && results && !results.length)}>
+            <Then>
+              <Tag colorScheme='yellow'>No results</Tag>
+            </Then>
+          </If>
+        </Else>
       </If>
     </>
   )
