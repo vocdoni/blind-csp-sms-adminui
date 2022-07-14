@@ -195,7 +195,7 @@ export default function Form() {
             </Then>
           </If>
         </Stack>
-        <If condition={token.length !== 0}>
+        <If condition={apiBase.length !== 0 && token.length !== 0}>
           <Then>
             <Stack spacing={6} mt={6}>
               <Divider />
