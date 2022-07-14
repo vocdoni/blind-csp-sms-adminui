@@ -19,7 +19,7 @@ const FindUserByExtraData = ({client, showError, ...props} : UserQueryProps) => 
     const birthday = birthdateRef.current.value
     const member = memberRef.current.value
 
-    const term = [member, birthday].join(' ')
+    const term = [member, birthday.replace(/-/g, '')].join(' ')
 
     setLoading(true)
     try {
