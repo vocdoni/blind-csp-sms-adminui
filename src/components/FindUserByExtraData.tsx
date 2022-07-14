@@ -65,7 +65,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
         <FormControl id='member'>
           <Input
             type='text'
-            placeholder={`Member id`}
+            placeholder={`member id, birthdate or phone number`}
             ref={memberRef}
             onKeyUp={handleKeyUp}
           />
