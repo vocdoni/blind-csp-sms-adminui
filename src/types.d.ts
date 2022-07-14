@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios'
+import { RefObject } from 'react'
 
 type ShowError = (text: string, description?: string) => void
 type ShowSuccess = (text: string, description?: string) => void
@@ -42,10 +43,11 @@ type UserQueryProps = {
   showError: ShowError
   setUser: SetUser
   setUserData: SetUserData
+  clearRef: RefObject<HTMLButtonElement>
 }
 
 type QueriesProps = UserQueryProps
 
-type UserSearchResultRowProps = UserQueryProps & {
+type UserSearchResultRowProps = Omit<UserQueryProps, 'clearRef'> & {
   hash: string
 }

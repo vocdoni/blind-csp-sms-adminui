@@ -10,6 +10,7 @@ import {
   FormErrorMessage,
   Heading,
   Divider,
+  Button,
 } from '@chakra-ui/react'
 import axios, { AxiosInstance } from 'axios'
 import React, { useRef, useState } from 'react'
@@ -20,6 +21,7 @@ import Queries from '../components/Queries'
 import { UserData } from '../types'
 import UserDataDisplay from '../components/UserDataDisplay'
 import UserActions from '../components/UserActions'
+import { DeleteIcon } from '@chakra-ui/icons'
 
 const emptyUser : UserData = {
   userID: '',
@@ -33,6 +35,7 @@ const emptyUser : UserData = {
 
 export default function Form() {
   const tokenRef = useRef<HTMLInputElement>(null)
+  const clearRef = useRef<HTMLButtonElement>(null)
   const toastRef = useRef<ToastId>()
   const toast = useToast()
   const [token, setToken] = useState<string>('')
@@ -76,6 +79,11 @@ export default function Form() {
           setUserError('Invalid user hash')
         })
     }, 500)
+  }
+
+  const clearData = () => {
+    setUserData(emptyUser)
+    setUser('')
   }
 
   const saveToken = () => {
@@ -140,12 +148,18 @@ export default function Form() {
           <Then>
             <Stack spacing={6} mt={6}>
               <Divider />
-              <Heading size='lg'>User actions</Heading>
+              <Heading size='lg'>
+                User actions
+                <Button onClick={clearData} rightIcon={<DeleteIcon />} size='xs' ml={5} ref={clearRef}>
+                  Clear data
+                </Button>
+              </Heading>
               <Queries
                 client={client.current as AxiosInstance}
                 showError={showError}
                 setUser={setUser}
                 setUserData={setUserData}
+                clearRef={clearRef}
               />
               <FormControl id='user' isInvalid={userError !== null}>
                 <FormLabel>User (hash)</FormLabel>

@@ -1,15 +1,27 @@
 import { SearchIcon } from '@chakra-ui/icons'
 import { FormControl, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { If, Then } from 'react-if'
 import { UserQueryProps } from '../types'
 import UserSearchResultRow from './UserSearchResultRow'
 
-const FindUserByExtraData = ({client, showError, ...props} : UserQueryProps) => {
+const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQueryProps) => {
   const birthdateRef = useRef<HTMLInputElement>(null)
+  const [eventIsSet, setEventIsSet] = useState<boolean>(false)
   const memberRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [results, setResults] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!clearRef.current || eventIsSet) return
+    setEventIsSet(true)
+    clearRef.current.addEventListener('click', (e) =>  {
+      setResults([])
+
+      if (!memberRef.current) return
+      memberRef.current.value = ''
+    })
+  }, [clearRef.current, eventIsSet])
 
   const makeQuery = async () => {
     if (!birthdateRef.current || !memberRef.current) {
