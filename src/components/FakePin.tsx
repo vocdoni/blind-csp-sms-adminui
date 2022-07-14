@@ -1,5 +1,5 @@
-import { PlusSquareIcon, RepeatIcon } from '@chakra-ui/icons'
-import { FormControl, Heading, HStack, IconButton, Input } from '@chakra-ui/react'
+import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
+import { Button, FormControl, Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 import { FakePinProps } from '../types'
 import { generateHashFromValues } from '../utils'
@@ -81,7 +81,7 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
   }
 
   return (
-    <>
+    <VStack align='left' spacing={3}>
       <Heading size='md'>
         Set new credentials (fake pin)
         <IconButton
@@ -110,15 +110,18 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
             onKeyUp={handleKeyUp}
           />
         </FormControl>
-        <IconButton
-          aria-label='create'
-          onClick={setNewCredentials}
-          icon={<PlusSquareIcon />}
-          isLoading={loading}
-          disabled={loading}
-        />
       </HStack>
-    </>
+      <Button
+        aria-label='Set new credentials'
+        onClick={setNewCredentials}
+        rightIcon={<CheckIcon />}
+        isLoading={loading}
+        disabled={loading}
+        w='full'
+      >
+        Set new credentials
+      </Button>
+    </VStack>
   )
 }
 
