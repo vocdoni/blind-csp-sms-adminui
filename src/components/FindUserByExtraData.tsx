@@ -21,6 +21,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
       if (!memberRef.current) return
       memberRef.current.value = ''
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearRef.current, eventIsSet])
 
   const makeQuery = async () => {
