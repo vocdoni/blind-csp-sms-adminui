@@ -48,6 +48,7 @@ export default function Form() {
   const [userError, setUserError] = useState<string|null>(null)
   const [userData, setUserData] = useState<UserData>(emptyUser)
   const [apiBase, setApiBase] = useState<string>('')
+  const [initialized, setInitialized] = useState<boolean>(false)
 
   const showError = useCallback((title: string, description?: string) => {
     toastRef.current = toast({
@@ -154,10 +155,12 @@ export default function Form() {
     }, 500)
   }, [showError, showSuccess])
 
+  // Store the default api base value (set as `defaultValue` and configurable via env vars)
   useEffect(() => {
-    if (apiBase.length > 0) return
+    if (apiBase.length > 0 || initialized) return
+    setInitialized(true)
     saveAPIBase()
-  }, [apiBase, saveAPIBase])
+  }, [apiBase, saveAPIBase, initialized])
 
   const disabled = token.length === 0 || (user.length === 0 || !userData)
 
