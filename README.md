@@ -1,7 +1,7 @@
 Blind CSP SMS Admin UI
 ======================
 
-A user interface for [Vocdoni's blind-csp's][blind-csp] sms handler admin API.
+A user interface for [Vocdoni's blind-csp][blind-csp] sms handler admin API.
 
 ## About
 
