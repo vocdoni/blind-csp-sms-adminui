@@ -163,6 +163,17 @@ export default function Form() {
     saveAPIBase()
   }, [apiBase, saveAPIBase, initialized])
 
+  // Ask before closing in case there's a token stored in state
+  const exitHandler = (e: BeforeUnloadEvent) => e.preventDefault()
+  useEffect(() => {
+    if (!token.length) return
+
+    window.addEventListener('beforeunload', exitHandler, {capture: true})
+    return () => {
+      window.removeEventListener('beforeunload', exitHandler, {capture: true})
+    }
+  }, [token])
+
   const disabled = token.length === 0 || (user.length === 0 || !userData)
 
   return (
