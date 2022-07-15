@@ -15,3 +15,6 @@ export const enterCallback = (e: KeyboardEvent<HTMLInputElement>, callback: () =
 
   callback()
 }
+
+export const hidePhoneNumber = (phone: string) =>
+  phone.substring(0, 1) + '*****' + phone.substring(phone.length - 2, phone.length)

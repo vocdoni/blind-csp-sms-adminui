@@ -1,10 +1,13 @@
 import { Box, Heading, Tag, useColorMode, VStack } from '@chakra-ui/react'
 import { Else, If, Then } from 'react-if'
 import { UserData } from '../types'
+import { hidePhoneNumber } from '../utils'
 import ElectionRow from './ElectionRow'
 
 const UserDataDisplay = ({data}: {data: UserData }) => {
   const { colorMode } = useColorMode()
+
+  const phone = '+' + data.phone.country_code + hidePhoneNumber(data.phone.national_number.toString())
 
   return (
     <VStack spacing={2} align='left' p={3} layerStyle={`code${colorMode}`}>
@@ -13,7 +16,7 @@ const UserDataDisplay = ({data}: {data: UserData }) => {
         {data.userID}
       </Box>
       <Box>
-        +{data.phone.country_code}{data.phone.national_number}
+        {phone}
       </Box>
       <If condition={data.elections && Object.keys(data.elections).length > 0}>
         <Then>

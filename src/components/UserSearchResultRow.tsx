@@ -2,6 +2,7 @@ import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-u
 import { useEffect, useState } from 'react'
 import { SetUser } from '../hooks/use-user-reducer'
 import { UserData, UserSearchResultRowProps } from '../types'
+import { hidePhoneNumber } from '../utils'
 
 const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}: UserSearchResultRowProps) => {
   const [loaded, setLoaded] = useState(false)
@@ -44,6 +45,8 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
     },
   }
 
+  const phone = '+' + user.phone.country_code + hidePhoneNumber(user.phone.national_number.toString())
+
   return (
     <Box p={3} sx={styles} onClick={onClick}>
       <VStack align='left'>
@@ -61,7 +64,7 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
         </Box>
         <Box>
           <Heading size='xs'>Phone</Heading>
-          +{user.phone.country_code}{user.phone.national_number}
+          {phone}
         </Box>
       </VStack>
     </Box>
