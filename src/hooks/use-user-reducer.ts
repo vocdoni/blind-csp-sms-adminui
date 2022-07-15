@@ -13,7 +13,7 @@ const emptyUser : UserData = {
 
 export const ResetUser = 'user:reset'
 export const SetUser = 'user:set'
-export const SetRemainingAttempts = 'user:remaining_attempts:reset'
+export const SetRemainingAttempts = 'user:remaining_attempts:set'
 export const PhoneUpdate = 'user:phone:update'
 export const SetConsumed = 'user:consumed:set'
 
