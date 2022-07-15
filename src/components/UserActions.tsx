@@ -1,6 +1,6 @@
 import { Button, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
-import { SetConsumed, SetRemainingAttempts } from '../hooks/use-user-reducer'
+import { SetRemainingAttempts } from '../hooks/use-user-reducer'
 import { UserActionsProps } from '../types'
 
 const UserActions = ({client, user, showError, showSuccess, userDispatch}: UserActionsProps) => {
