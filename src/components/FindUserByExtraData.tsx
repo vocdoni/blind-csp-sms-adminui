@@ -36,7 +36,11 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
     const birthday = birthdateRef.current.value
     const member = memberRef.current.value
 
-    const term = [member, birthday.replace(/-/g, '')].join(' ')
+    if (!birthday.length || !member.length) {
+      return showError('You must specify birthday and member id')
+    }
+
+    const term = [member, birthday.replace(/-/g, '')].join('')
 
     setLoading(true)
     try {
