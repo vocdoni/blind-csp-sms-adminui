@@ -1,10 +1,11 @@
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import { Button, FormControl, Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
+import { SetUser } from '../hooks/use-user-reducer'
 import { FakePinProps } from '../types'
 import { generateHashFromValues } from '../utils'
 
-const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: FakePinProps) => {
+const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: FakePinProps) => {
   const codeRef = useRef<HTMLInputElement>(null)
   const pinRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -64,7 +65,10 @@ const FakePin = ({showError, showSuccess, user, client, setUser, setUserData}: F
       }
 
       setUser(newhash)
-      setUserData(newuser.data)
+      userDispatch({
+        type: SetUser,
+        payload: newuser.data,
+      })
       clearFields()
       showSuccess('User cloned successfully', 'New user data already loaded')
     } catch (e) {

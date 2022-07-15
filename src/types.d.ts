@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios'
-import { RefObject } from 'react'
+import { Dispatch, RefObject } from 'react'
+import { UserAction } from './hooks/use-user-reducer'
 
 type ShowError = (text: string, description?: string) => void
 type ShowSuccess = (text: string, description?: string) => void
@@ -9,7 +10,7 @@ type FakePinProps = {
   client: AxiosInstance
   user: UserData
   setUser: SetUser
-  setUserData: SetUserData
+  userDispatch: UserDispatch
 }
 type CreateUserProps = {
   showError: ShowError
@@ -36,13 +37,13 @@ type UserData = {
 }
 
 type SetUser = (user: string) => void
-type SetUserData = (data: UserData) => void
+type UserDispatch = Dispatch<UserAction>
 
 type UserQueryProps = {
   client: AxiosInstance
   showError: ShowError
   setUser: SetUser
-  setUserData: SetUserData
+  userDispatch: UserDispatch
   clearRef: RefObject<HTMLButtonElement>
 }
 
@@ -54,8 +55,10 @@ type UserSearchResultRowProps = Omit<UserQueryProps, 'clearRef'> & {
 
 type PhoneNumberProps = {
   client: AxiosInstance
+  user: UserData
+  userDispatch: UserDispatch
   showError: ShowError
   showSuccess: ShowSuccess
-  user: UserData
-  setUserData: SetUserData
 }
+
+type UserActionsProps = PhoneNumberProps

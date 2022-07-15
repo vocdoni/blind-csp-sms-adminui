@@ -11,7 +11,7 @@ import { useRef, useState } from 'react'
 import { PhoneNumberProps } from '../types'
 import { enterCallback } from '../utils'
 
-const PhoneUpdate = ({client, showError, showSuccess, setUserData, user} : PhoneNumberProps) => {
+const PhoneUpdate = ({client, showError, showSuccess, userDispatch, user} : PhoneNumberProps) => {
   const phoneRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -35,13 +35,13 @@ const PhoneUpdate = ({client, showError, showSuccess, setUserData, user} : Phone
       if (response.data.ok !== 'true') {
         throw new Error('API returned KO')
       }
-      setUserData({
-        ...user,
-        phone: {
+      userDispatch({
+        type: 'user:phone:update',
+        payload: {
           // note this dirty trick is only to show the data in the UI
-          country_code: parseInt(phone.substring(1, 4), 10),
-          national_number: parseInt(phone.substring(4), 10),
-        },
+          prefix: parseInt(phone.substring(1, 4), 10),
+          national: parseInt(phone.substring(4), 10),
+        }
       })
       showSuccess('Phone has been updated', 'Note it is NOT updated in the extra field tho.')
       phoneRef.current.value = ''

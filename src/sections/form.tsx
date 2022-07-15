@@ -25,16 +25,8 @@ import { API_BASE } from '../constants'
 import { UserData } from '../types'
 import { enterCallback } from '../utils'
 import PhoneUpdate from '../components/PhoneUpdate'
-
-const emptyUser : UserData = {
-  userID: '',
-  elections: {},
-  extraData: '',
-  phone: {
-    country_code: 0,
-    national_number: 0,
-  }
-}
+import CreateUser from '../components/CreateUser'
+import { ResetUser, SetUser, useUserReducer } from '../hooks/use-user-reducer'
 
 export default function Form() {
   const tokenRef = useRef<HTMLInputElement>(null)
@@ -47,7 +39,7 @@ export default function Form() {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const client = useRef<AxiosInstance>()
   const [userError, setUserError] = useState<string|null>(null)
-  const [userData, setUserData] = useState<UserData>(emptyUser)
+  const [userData, userDispatch] = useUserReducer()
   const [apiBase, setApiBase] = useState<string>('')
   const [initialized, setInitialized] = useState<boolean>(false)
 
@@ -69,7 +61,8 @@ export default function Form() {
 
   const storeUser = (user: string) => {
     setUserError(null)
-    setUserData(emptyUser)
+    userDispatch({type: ResetUser})
+
     if (!user.length) {
       return
     }
@@ -80,7 +73,7 @@ export default function Form() {
     timeoutRef.current = setTimeout(() => {
       client.current?.get(`/user/${user}`)
         .then(({data}: {data: UserData}) => {
-          setUserData(data)
+          userDispatch({type: SetUser, payload: data})
         }).catch(() => {
           setUserError('Invalid user hash')
         })
@@ -88,7 +81,7 @@ export default function Form() {
   }
 
   const clearData = () => {
-    setUserData(emptyUser)
+    userDispatch({type: ResetUser})
     setUser('')
   }
 
@@ -224,8 +217,8 @@ export default function Form() {
                 client={client.current as AxiosInstance}
                 showError={showError}
                 setUser={setUser}
-                setUserData={setUserData}
                 clearRef={clearRef}
+                userDispatch={userDispatch}
               />
               <FormControl id='user' isInvalid={userError !== null}>
                 <FormLabel>User (hash)</FormLabel>
@@ -250,22 +243,22 @@ export default function Form() {
                   <UserActions
                     client={client.current as AxiosInstance}
                     user={userData}
-                    setUserData={setUserData}
+                    userDispatch={userDispatch}
                     showError={showError}
                     showSuccess={showSuccess}
                   />
                   <PhoneUpdate
                     client={client.current as AxiosInstance}
                     user={userData}
-                    setUserData={setUserData}
+                    userDispatch={userDispatch}
                     showError={showError}
                     showSuccess={showSuccess}
                   />
                   <FakePin
                     client={client.current as AxiosInstance}
                     user={userData}
+                    userDispatch={userDispatch}
                     setUser={setUser}
-                    setUserData={setUserData}
                     showError={showError}
                     showSuccess={showSuccess}
                   />

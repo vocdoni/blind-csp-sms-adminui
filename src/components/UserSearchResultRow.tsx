@@ -1,8 +1,9 @@
 import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { SetUser } from '../hooks/use-user-reducer'
 import { UserData, UserSearchResultRowProps } from '../types'
 
-const UserSearchResultRow = ({hash, client, setUser: setUserHash, setUserData}: UserSearchResultRowProps) => {
+const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}: UserSearchResultRowProps) => {
   const [loaded, setLoaded] = useState(false)
   const [user, setUser] = useState<UserData>()
   const { colorMode } = useColorMode()
@@ -23,7 +24,10 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, setUserData}: 
 
   const onClick = () => {
     setUserHash(hash)
-    setUserData(user)
+    userDispatch({
+      type: SetUser,
+      payload: user,
+    })
   }
 
   const styles = {

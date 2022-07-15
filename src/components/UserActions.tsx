@@ -1,17 +1,9 @@
 import { Button, HStack } from '@chakra-ui/react'
-import { AxiosInstance } from 'axios'
 import { useState } from 'react'
-import { ShowError, ShowSuccess, UserData } from '../types'
+import { SetConsumed, SetRemainingAttempts } from '../hooks/use-user-reducer'
+import { UserActionsProps } from '../types'
 
-type UserActionsProps = {
-  client: AxiosInstance
-  user: UserData
-  showError: ShowError
-  showSuccess: ShowSuccess
-  setUserData: (data: UserData) => void
-}
-
-const UserActions = ({client, user, showError, showSuccess, setUserData}: UserActionsProps) => {
+const UserActions = ({client, user, showError, showSuccess, userDispatch}: UserActionsProps) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   if (!user || !user.elections || (user.elections && !Object.values(user.elections).length)) {
@@ -47,15 +39,12 @@ const UserActions = ({client, user, showError, showSuccess, setUserData}: UserAc
                 })
             }
             if (successful === attempts) {
-              setUserData({
-                ...user,
-                elections: {
-                  ...user.elections,
-                  [election.electionId]: {
-                    ...election,
-                    remainingAttempts: 5,
-                  },
-                },
+              userDispatch({
+                type: SetRemainingAttempts,
+                payload: {
+                  process: election.electionId,
+                  attempts: 5,
+                }
               })
               showSuccess('SMS attempts reset successfully')
             }
@@ -83,14 +72,11 @@ const UserActions = ({client, user, showError, showSuccess, setUserData}: UserAc
             }
             try {
               await client.get(`/setConsumed/${user.userID}/${election.electionId}/false`)
-              setUserData({
-                ...user,
-                elections: {
-                  ...user.elections,
-                  [election.electionId]: {
-                    ...election,
-                    consumed: false,
-                  },
+              userDispatch({
+                type: SetConsumed,
+                payload: {
+                  process: election.electionId,
+                  consumed: false,
                 },
               })
               showSuccess('Consumed status set to NOT consumed successfully')
