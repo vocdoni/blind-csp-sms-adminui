@@ -53,42 +53,6 @@ const UserActions = ({client, user, showError, showSuccess, userDispatch}: UserA
         }}>
         Reset 5 SMS limit
       </Button>
-      <Button
-        disabled={loading}
-        colorScheme='red'
-        isLoading={loading}
-        w='full'
-        onClick={() => {
-          setLoading(true)
-          ;(async () => {
-            const [ election ] = Object.values(user.elections)
-            if (!election) {
-              showSuccess('User has no access to any election')
-              return setLoading(false)
-            }
-            if (!election.consumed) {
-              showSuccess('Status was already set to NOT consumed')
-              return setLoading(false)
-            }
-            try {
-              await client.get(`/setConsumed/${user.userID}/${election.electionId}/false`)
-              userDispatch({
-                type: SetConsumed,
-                payload: {
-                  process: election.electionId,
-                  consumed: false,
-                },
-              })
-              showSuccess('Consumed status set to NOT consumed successfully')
-            } catch (e: any) {
-              console.error(`error setting consumed to user ${user.userID}:`, e)
-              showError('Sorry, couldn\'t do that', 'Check console for more details')
-            }
-            setLoading(false)
-          })()
-        }}>
-        Set NOT consumed
-      </Button>
     </HStack>
   )
 }
