@@ -30,7 +30,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
   const makeQuery = async () => {
     setLoaded(false)
     if (!birthdateRef.current || !memberRef.current) {
-      return showError('try again')
+      return showError('Try again')
     }
 
     const birthday = birthdateRef.current.value
@@ -68,7 +68,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
         <FormControl id='member'>
           <Input
             type='text'
-            placeholder={`member id, birthdate or phone number`}
+            placeholder={`member id`}
             ref={memberRef}
             onKeyUp={(e) => enterCallback(e, makeQuery)}
           />

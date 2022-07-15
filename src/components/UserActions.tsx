@@ -66,6 +66,7 @@ const UserActions = ({client, user, showError, showSuccess, setUserData}: UserAc
       </Button>
       <Button
         disabled={loading}
+        colorScheme='red'
         isLoading={loading}
         w='full'
         onClick={() => {
