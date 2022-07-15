@@ -25,7 +25,6 @@ import { API_BASE } from '../constants'
 import { UserData } from '../types'
 import { enterCallback } from '../utils'
 import PhoneUpdate from '../components/PhoneUpdate'
-import CreateUser from '../components/CreateUser'
 import { ResetUser, SetUser, useUserReducer } from '../hooks/use-user-reducer'
 
 export default function Form() {
