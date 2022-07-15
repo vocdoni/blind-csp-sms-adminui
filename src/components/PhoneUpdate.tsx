@@ -43,7 +43,7 @@ const PhoneUpdate = ({client, showError, showSuccess, userDispatch, user} : Phon
           national: parseInt(phone.substring(4), 10),
         }
       })
-      showSuccess('Phone has been updated', 'Note it is NOT updated in the extra field tho.')
+      showSuccess('Phone has been updated')
       phoneRef.current.value = ''
     } catch (e) {
       showError('Could not update phone', 'Check the console for details')
