@@ -72,7 +72,7 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
       clearFields()
       showSuccess('User cloned successfully', 'New user data already loaded')
     } catch (e) {
-      showError('Couldn\'t clone user', 'Check console for more details')
+      showError('Couldn\'t clone user.', 'Try changing credentials & check console for more details')
       console.error(e)
     }
     setLoading(false)
