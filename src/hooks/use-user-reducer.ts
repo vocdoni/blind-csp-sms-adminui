@@ -1,5 +1,5 @@
 import { Reducer, useReducer } from 'react'
-import { UserData } from '../types'
+import { UserData } from '@localtypes'
 
 const emptyUser : UserData = {
   userID: '',

@@ -7,9 +7,9 @@ import {
   Input,
   VStack,
 } from '@chakra-ui/react'
+import { PhoneNumberProps } from '@localtypes'
+import { enterCallback } from '@utils'
 import { useRef, useState } from 'react'
-import { PhoneNumberProps } from '../types'
-import { enterCallback } from '../utils'
 
 const PhoneUpdate = ({client, showError, showSuccess, userDispatch, user} : PhoneNumberProps) => {
   const phoneRef = useRef<HTMLInputElement>(null)

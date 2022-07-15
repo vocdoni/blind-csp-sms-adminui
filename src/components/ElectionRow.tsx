@@ -1,6 +1,6 @@
 import { Box, HStack, Link, Tag, Text } from '@chakra-ui/react'
-import { EXPLORER } from '../constants'
-import { Election } from '../types'
+import { EXPLORER } from '@constants'
+import { Election } from '@localtypes'
 
 const ElectionRow = ({election}: {election: Election}) => {
   const consumedColor = election.consumed ? 'pink' : 'green'

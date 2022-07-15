@@ -1,9 +1,9 @@
 import { SearchIcon } from '@chakra-ui/icons'
 import { FormControl, HStack, IconButton, Input, Tag, VStack } from '@chakra-ui/react'
+import { UserQueryProps } from '@localtypes'
+import { enterCallback } from '@utils'
 import { useEffect, useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
-import { UserQueryProps } from '../types'
-import { enterCallback } from '../utils'
 import UserSearchResultRow from './UserSearchResultRow'
 
 const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQueryProps) => {

@@ -1,9 +1,9 @@
 import { Button, HStack } from '@chakra-ui/react'
+import { SetRemainingAttempts } from '@hooks/use-user-reducer'
+import { UserActionsProps } from '@localtypes'
 import { useState } from 'react'
-import { SetRemainingAttempts } from '../hooks/use-user-reducer'
-import { UserActionsProps } from '../types'
 
-const UserActions = ({client, user, showError, showSuccess, userDispatch}: UserActionsProps) => {
+const ElectionActions = ({client, user, showError, showSuccess, userDispatch}: UserActionsProps) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   if (!user || !user.elections || (user.elections && !Object.values(user.elections).length)) {
@@ -57,4 +57,4 @@ const UserActions = ({client, user, showError, showSuccess, userDispatch}: UserA
   )
 }
 
-export default UserActions
+export default ElectionActions

@@ -1,5 +1,5 @@
 import { Divider, Heading, VStack } from '@chakra-ui/react'
-import { QueriesProps } from '../types'
+import { QueriesProps } from '@localtypes'
 import FindUserByExtraData from './FindUserByExtraData'
 
 const Queries = (props: QueriesProps) => {

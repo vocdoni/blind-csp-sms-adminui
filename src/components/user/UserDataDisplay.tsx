@@ -1,8 +1,8 @@
 import { Box, Heading, Tag, useColorMode, VStack } from '@chakra-ui/react'
+import { UserData } from '@localtypes'
+import { hidePhoneNumber } from '@utils'
 import { Else, If, Then } from 'react-if'
-import { UserData } from '../types'
-import { hidePhoneNumber } from '../utils'
-import ElectionRow from './ElectionRow'
+import ElectionRow from '../ElectionRow'
 
 const UserDataDisplay = ({data}: {data: UserData }) => {
   const { colorMode } = useColorMode()

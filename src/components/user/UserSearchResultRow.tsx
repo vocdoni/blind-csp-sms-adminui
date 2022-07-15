@@ -1,8 +1,8 @@
 import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-ui/react'
+import { SetUser } from '@hooks/use-user-reducer'
+import { UserData, UserSearchResultRowProps } from '@localtypes'
+import { hidePhoneNumber } from '@utils'
 import { useEffect, useState } from 'react'
-import { SetUser } from '../hooks/use-user-reducer'
-import { UserData, UserSearchResultRowProps } from '../types'
-import { hidePhoneNumber } from '../utils'
 
 const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}: UserSearchResultRowProps) => {
   const [loaded, setLoaded] = useState(false)

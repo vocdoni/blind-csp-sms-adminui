@@ -4,7 +4,7 @@ import { UserAction } from './hooks/use-user-reducer'
 
 type ShowError = (text: string, description?: string) => void
 type ShowSuccess = (text: string, description?: string) => void
-type FakePinProps = {
+type CloneUserProps = {
   showError: ShowError
   showSuccess: ShowSuccess
   client: AxiosInstance

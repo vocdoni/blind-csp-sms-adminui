@@ -1,10 +1,10 @@
 import { Button, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
+import { CreateUserProps } from '@localtypes'
+import { generateHashFromValues } from '@utils'
 import React, { useRef, useState } from 'react'
-import { CreateUserProps } from '../types'
-import { generateHashFromValues } from '../utils'
 
 
-const CreateUser = ({showError, client} : CreateUserProps) => {
+const UserCreate = ({showError, client} : CreateUserProps) => {
   const extraRef = useRef<HTMLInputElement>(null)
   const codeRef = useRef<HTMLInputElement>(null)
   const pinRef = useRef<HTMLInputElement>(null)
@@ -100,4 +100,4 @@ const CreateUser = ({showError, client} : CreateUserProps) => {
   )
 }
 
-export default CreateUser
+export default UserCreate

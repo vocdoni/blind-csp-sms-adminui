@@ -13,19 +13,18 @@ import {
   Divider,
   Button,
 } from '@chakra-ui/react'
+import UserClone from '@components/user/UserClone'
+import Queries from '@components/user/Queries'
+import UserDataDisplay from '@components/user/UserDataDisplay'
+import ElectionActions from '@components/ElectionActions'
+import { API_BASE } from '@constants'
+import { UserData } from '@localtypes'
+import { enterCallback } from '@utils'
+import PhoneUpdate from '@components/user/PhoneUpdate'
+import { ResetUser, SetUser, useUserReducer } from '@hooks/use-user-reducer'
 import axios, { AxiosInstance } from 'axios'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { If, Then } from 'react-if'
-
-import FakePin from '../components/FakePin'
-import Queries from '../components/Queries'
-import UserDataDisplay from '../components/UserDataDisplay'
-import UserActions from '../components/UserActions'
-import { API_BASE } from '../constants'
-import { UserData } from '../types'
-import { enterCallback } from '../utils'
-import PhoneUpdate from '../components/PhoneUpdate'
-import { ResetUser, SetUser, useUserReducer } from '../hooks/use-user-reducer'
 
 export default function Form() {
   const tokenRef = useRef<HTMLInputElement>(null)
@@ -239,7 +238,7 @@ export default function Form() {
               </If>
               <If condition={!disabled}>
                 <Then>
-                  <UserActions
+                  <ElectionActions
                     client={client.current as AxiosInstance}
                     user={userData}
                     userDispatch={userDispatch}
@@ -253,7 +252,7 @@ export default function Form() {
                     showError={showError}
                     showSuccess={showSuccess}
                   />
-                  <FakePin
+                  <UserClone
                     client={client.current as AxiosInstance}
                     user={userData}
                     userDispatch={userDispatch}

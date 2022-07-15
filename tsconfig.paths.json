@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@constants": ["constants.ts"],
+      "@hooks/*": ["hooks/*"],
+      "@sections/*": ["sections/*"],
+      "@utils": ["utils.ts"],
+      "@localtypes": ["types.d.ts"]
+    }
+  }
+}

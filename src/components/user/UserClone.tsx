@@ -1,11 +1,11 @@
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import { Button, FormControl, Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
+import { SetUser } from '@hooks/use-user-reducer'
+import { CloneUserProps } from '@localtypes'
+import { generateHashFromValues } from '@utils'
 import { useRef, useState } from 'react'
-import { SetUser } from '../hooks/use-user-reducer'
-import { FakePinProps } from '../types'
-import { generateHashFromValues } from '../utils'
 
-const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: FakePinProps) => {
+const UserClone = ({showError, showSuccess, user, client, setUser, userDispatch}: CloneUserProps) => {
   const codeRef = useRef<HTMLInputElement>(null)
   const pinRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -30,7 +30,7 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
     pinRef.current.value = ''
   }
 
-  const setNewCredentials = async () => {
+  const cloneUser = async () => {
     if (!codeRef.current || !pinRef.current) {
       return showError('try again')
     }
@@ -81,13 +81,13 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return
 
-    setNewCredentials()
+    cloneUser()
   }
 
   return (
     <VStack align='left' spacing={3}>
       <Heading size='md'>
-        Set new credentials (fake pin)
+        Clone user
         <IconButton
           aria-label='Generate new pair'
           title='Generate new pair'
@@ -116,17 +116,16 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
         </FormControl>
       </HStack>
       <Button
-        aria-label='Set new credentials'
-        onClick={setNewCredentials}
+        onClick={cloneUser}
         rightIcon={<CheckIcon />}
         isLoading={loading}
         disabled={loading}
         w='full'
       >
-        Set new credentials
+        Clone user
       </Button>
     </VStack>
   )
 }
 
-export default FakePin
+export default UserClone
