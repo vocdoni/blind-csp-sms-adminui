@@ -141,17 +141,17 @@ export default function Form() {
     }
 
     timeoutRef.current = setTimeout(() => {
-      axios.get(base)
-        .catch((e) => {
-          switch (e.request.status) {
-            case 405:
-              showSuccess('API base seems valid')
-              setApiBase(base)
-              break
-            default:
-              setApiBase('')
-              showError('invalid API base')
+      axios.get(`${base}/ping`)
+        .then(({data}) => {
+          if (data !== '.\n') {
+            throw new Error('Pong not received')
           }
+          showSuccess('API base seems valid')
+          setApiBase(base)
+        })
+        .catch((e) => {
+          setApiBase('')
+          showError('invalid API base')
         })
     }, 500)
   }, [showError, showSuccess])
