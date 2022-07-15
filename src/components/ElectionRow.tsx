@@ -1,4 +1,5 @@
 import { Box, HStack, Link, Tag, Text } from '@chakra-ui/react'
+import { EXPLORER } from '../constants'
 import { Election } from '../types'
 
 const ElectionRow = ({election}: {election: Election}) => {
@@ -10,7 +11,7 @@ const ElectionRow = ({election}: {election: Election}) => {
       <Text w='full' textOverflow='ellipsis' overflow='hidden' whiteSpace='pre'>
         <Link
           title={election.electionId}
-          href={`https://dev.explorer.vote/processes/show/#/${election.electionId}`}
+          href={`${EXPLORER}/processes/show/#/${election.electionId}`}
           target='_blank'
         >
           {election.electionId}
