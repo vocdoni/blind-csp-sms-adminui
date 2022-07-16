@@ -5,49 +5,45 @@ import {
   Heading,
   HStack,
   Input,
+  useToast,
   VStack,
 } from '@chakra-ui/react'
-import { PhoneNumberProps } from '@localtypes'
+import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
 import { useRef, useState } from 'react'
 
-const PhoneUpdate = ({client, showError, showSuccess, userDispatch, user} : PhoneNumberProps) => {
+const PhoneUpdate = () => {
   const phoneRef = useRef<HTMLInputElement>(null)
-  const [loading, setLoading] = useState<boolean>(false)
+  const toast = useToast()
+  const { updatePhone } = useUser()
+  const [ loading, setLoading ] = useState<boolean>(false)
 
-  const updatePhone = async () => {
+  const checkAndUpdatePhone = async () => {
     if (!phoneRef.current) {
-      return showError('Try again')
+      return
     }
 
     const phone = phoneRef.current.value
     if (!phone.length) {
-      return showError('Phone not specified')
+      toast({
+        status: 'error',
+        title: 'Phone not specified',
+      })
+      return
     }
 
     if (!phone.startsWith('+')) {
-      return showError('Missing country prefix', 'Phone should start with a country prefix (i.e. +34)')
+      toast({
+        status: 'error',
+        title: 'Missing country prefix',
+        description: 'Phone should start with a country prefix (i.e. +34)',
+      })
+      return
     }
 
     setLoading(true)
-    try {
-      const response = await client.get(`/setPhone/${user.userID}/${phone}`)
-      if (response.data.ok !== 'true') {
-        throw new Error('API returned KO')
-      }
-      userDispatch({
-        type: 'user:phone:update',
-        payload: {
-          // note this dirty trick is only to show the data in the UI
-          prefix: parseInt(phone.substring(1, 4), 10),
-          national: parseInt(phone.substring(4), 10),
-        }
-      })
-      showSuccess('Phone has been updated')
+    if (await updatePhone(phone)) {
       phoneRef.current.value = ''
-    } catch (e) {
-      showError('Could not update phone', 'Check the console for details')
-      console.error(e)
     }
     setLoading(false)
   }
@@ -63,12 +59,12 @@ const PhoneUpdate = ({client, showError, showSuccess, userDispatch, user} : Phon
             type='text'
             placeholder='+23712365...'
             ref={phoneRef}
-            onKeyUp={(e) => enterCallback(e, updatePhone)}
+            onKeyUp={(e) => enterCallback(e, checkAndUpdatePhone)}
           />
         </FormControl>
         <Button
           aria-label='Update phone'
-          onClick={updatePhone}
+          onClick={checkAndUpdatePhone}
           rightIcon={<CheckIcon />}
           isLoading={loading}
           disabled={loading}

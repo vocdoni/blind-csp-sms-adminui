@@ -18,3 +18,17 @@ export const enterCallback = (e: KeyboardEvent<HTMLInputElement>, callback: () =
 
 export const hidePhoneNumber = (phone: string) =>
   phone.substring(0, 1) + '*****' + phone.substring(phone.length - 2, phone.length)
+
+
+export const formatError = (e: any) => {
+  if (typeof e === 'object' && e.hasOwnProperty('message')) {
+    return new Error(e.message)
+  }
+
+  if (typeof e === 'string') {
+    return new Error(e)
+  }
+
+  console.warn('unkown error to be formated:', e)
+  return new Error('Unknown error to be formated')
+}

@@ -1,44 +1,28 @@
 import { SearchIcon } from '@chakra-ui/icons'
-import { FormControl, HStack, IconButton, Input, Tag, VStack } from '@chakra-ui/react'
-import { UserQueryProps } from '@localtypes'
+import { FormControl, IconButton, Input, Stack, Tag, useToast } from '@chakra-ui/react'
+import { useApi } from '@hooks/use-api'
 import { enterCallback } from '@utils'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
 import UserSearchResultRow from './UserSearchResultRow'
 
-const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQueryProps) => {
+const UserQuery = () => {
   const birthdateRef = useRef<HTMLInputElement>(null)
-  const [eventIsSet, setEventIsSet] = useState<boolean>(false)
   const memberRef = useRef<HTMLInputElement>(null)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [loaded, setLoaded] = useState<boolean>(false)
-  const [results, setResults] = useState<string[]>([])
-
-  useEffect(() => {
-    if (!clearRef.current || eventIsSet) return
-    setEventIsSet(true)
-    clearRef.current.addEventListener('click', (e) =>  {
-      setResults([])
-      setLoaded(false)
-
-      if (!memberRef.current) return
-      memberRef.current.value = ''
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearRef.current, eventIsSet])
+  const toast = useToast()
+  const [ loading, setLoading ] = useState(false)
+  const [ loaded, setLoaded ] = useState(false)
+  const [ results, setResults ] = useState([])
+  const { client } = useApi()
 
   const makeQuery = async () => {
     setLoaded(false)
     if (!birthdateRef.current || !memberRef.current) {
-      return showError('Try again')
+      return
     }
 
     const birthday = birthdateRef.current.value
     const member = memberRef.current.value
-
-    if (!birthday.length || !member.length) {
-      return showError('You must specify birthday and member id')
-    }
 
     const term = [member, birthday.replace(/-/g, '')].join('')
 
@@ -48,15 +32,20 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
       setResults(results.data.users)
       setLoaded(true)
     } catch (e) {
-      showError('Error searching member', 'Check console for details')
+      toast({
+        status: 'error',
+        title: 'Error searching member',
+        description: 'Check console for details',
+      })
+
       console.error(e)
     }
     setLoading(false)
   }
 
   return (
-    <>
-      <HStack>
+    <Stack w='full'>
+      <Stack direction='row'>
         <FormControl id='birthdate'>
           <Input
             type='date'
@@ -80,23 +69,17 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
           isLoading={loading}
           disabled={loading}
         />
-      </HStack>
+      </Stack>
       <If condition={loaded && results && results.length > 0}>
         <Then>
           {() => (
-              <VStack align='left' className='results-list'>
+              <Stack align='left' className='results-list'>
               {
                 results.map((hash, k) =>
-                  <UserSearchResultRow
-                    key={k}
-                    hash={hash}
-                    client={client}
-                    showError={showError}
-                    {...props}
-                  />
+                  <UserSearchResultRow key={k} hash={hash} />
                 )
               }
-              </VStack>
+              </Stack>
             )
           }
         </Then>
@@ -108,8 +91,8 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
           </If>
         </Else>
       </If>
-    </>
+    </Stack>
   )
 }
 
-export default FindUserByExtraData
+export default UserQuery

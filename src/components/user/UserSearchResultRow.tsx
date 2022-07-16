@@ -1,13 +1,17 @@
 import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-ui/react'
-import { SetUser } from '@hooks/use-user-reducer'
+import { useApi } from '@hooks/use-api'
+import { useUser } from '@hooks/use-user'
+import { Set } from '@hooks/use-user-reducer'
 import { UserData, UserSearchResultRowProps } from '@localtypes'
 import { hidePhoneNumber } from '@utils'
 import { useEffect, useState } from 'react'
 
-const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}: UserSearchResultRowProps) => {
-  const [loaded, setLoaded] = useState(false)
-  const [user, setUser] = useState<UserData>()
+const UserSearchResultRow = ({hash}: UserSearchResultRowProps) => {
   const { colorMode } = useColorMode()
+  const { client } = useApi()
+  const { dispatch, hashRef } = useUser()
+  const [ loaded, setLoaded ] = useState(false)
+  const [ user, setUser ] = useState<UserData>()
 
   useEffect(() => {
     ;(async () => {
@@ -24,11 +28,14 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
   }
 
   const onClick = () => {
-    setUserHash(hash)
-    userDispatch({
-      type: SetUser,
+    dispatch({
+      type: Set,
       payload: user,
     })
+    if (!hashRef.current) {
+      return
+    }
+    hashRef.current.value = user.userID
   }
 
   const styles = {
@@ -59,12 +66,12 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
           </Tag>
         </HStack>
         <Box>
-          <Heading size='xs'>Extra data</Heading>
-          {user.extraData}
-        </Box>
-        <Box>
           <Heading size='xs'>Phone</Heading>
           {phone}
+        </Box>
+        <Box>
+          <Heading size='xs'>Extra data</Heading>
+          {user.extraData}
         </Box>
       </VStack>
     </Box>

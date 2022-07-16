@@ -1,6 +1,6 @@
 import React from 'react'
-import Form from '@sections/form'
+import Manager from '@sections/manager'
 
 export const App = () => (
-  <Form />
+  <Manager />
 )

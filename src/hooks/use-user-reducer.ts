@@ -1,4 +1,4 @@
-import { Reducer, useReducer } from 'react'
+import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
 import { UserData } from '@localtypes'
 
 const emptyUser : UserData = {
@@ -11,87 +11,172 @@ const emptyUser : UserData = {
   },
 }
 
-export const ResetUser = 'user:reset'
-export const SetUser = 'user:set'
-export const SetRemainingAttempts = 'user:remaining_attempts:set'
-export const PhoneUpdate = 'user:phone:update'
-export const SetConsumed = 'user:consumed:set'
+export interface UserState {
+  error: null | Error
+  loaded: boolean
+  loading: boolean
+  hashRef: RefObject<HTMLInputElement>
+  user: UserData
+  addAttempt: (process: string) => Promise<boolean>
+  clone: (user: string) => Promise<boolean>
+  updatePhone: (phone: string) => Promise<boolean>
+  remove: () => Promise<boolean>
+  reset: () => void
+  resetAttempts: (process: string) => Promise<boolean>
+  set: (user: string) => void
+  setConsumed: (process: string, consumed: boolean) => Promise<boolean>
+  dispatch: Dispatch<UserAction>
+}
 
-type RemainingAttemptsPayload = {
+export const UserStateEmpty : UserState = {
+  error: null,
+  loaded: false,
+  loading: false,
+  hashRef: createRef(),
+  user: {
+    ...emptyUser,
+  },
+  addAttempt: (process) => Promise.reject(false),
+  clone: (user) => Promise.reject(false),
+  updatePhone: (phone) => Promise.reject(false),
+  remove: () => Promise.reject(false),
+  reset: () => {},
+  resetAttempts: (process) => Promise.reject(false),
+  set: (user) => {},
+  setConsumed: (process, consumed) => Promise.reject(false),
+  dispatch: (action) => {},
+}
+
+export const Loading = 'user:loading'
+export const Reset = 'user:reset'
+export const Set = 'user:set'
+export const SetConsumed = 'user:consumed:set'
+export const SetError = 'user:error:set'
+export const SetRemainingAttempts = 'user:remaining_attempts:set'
+export const UpdatePhone = 'user:phone:update'
+
+type SetRemainingAttemptsPayload = {
   process: string
   attempts: number
 }
-type PhonePayload = {
+type UpdatePhonePayload = {
   prefix: number
   national: number
 }
-type ConsumedPayload = {
+type SetConsumedPayload = {
   process: string,
   consumed: boolean
 }
-type SetUserPayload = UserData
+type SetPayload = UserData
+type SetErrorPayload = Error
 
-type UserType = typeof SetRemainingAttempts
-  | typeof PhoneUpdate
+type UserType = typeof Loading
+  | typeof Reset
+  | typeof Set
   | typeof SetConsumed
-  | typeof SetUser
-  | typeof ResetUser
+  | typeof SetError
+  | typeof SetRemainingAttempts
+  | typeof UpdatePhone
 
-type UserPayload = RemainingAttemptsPayload | PhonePayload | ConsumedPayload | SetUserPayload
+type UserPayload = SetConsumedPayload
+  | SetErrorPayload
+  | SetPayload
+  | SetRemainingAttemptsPayload
+  | UpdatePhonePayload
 
 export type UserAction = {
   type: UserType
   payload?: UserPayload
 }
 
-const userReducer : Reducer<UserData, UserAction> = (state: UserData, action: UserAction) => {
+const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: UserAction) => {
   let payload
   switch (action.type) {
-    case ResetUser:
+    case Loading:
       return {
-        ...emptyUser,
+        ...state,
+        loaded: false,
+        loading: true,
       }
-    case SetUser:
-      payload = (action.payload as SetUserPayload)
+    case Reset:
       return {
-        ...payload,
+        ...state,
+        loaded: false,
+        loading: false,
+        error: null,
+        user: {
+          ...emptyUser,
+        },
+      }
+    case Set:
+      payload = (action.payload as SetPayload)
+      return {
+        ...state,
+        loaded: true,
+        loading: false,
+        user: {
+          ...payload,
+        },
+      }
+    case SetError:
+      payload = (action.payload as SetErrorPayload)
+      return {
+        ...state,
+        loading: false,
+        loaded: false,
+        error: payload,
+        user: {
+          ...emptyUser,
+        },
       }
     case SetRemainingAttempts:
-      payload = (action.payload as RemainingAttemptsPayload)
+      payload = (action.payload as SetRemainingAttemptsPayload)
       return {
         ...state,
-        elections: {
-          ...state.elections,
-          [payload.process]: {
-            ...state.elections[payload.process],
-            remainingAttempts: payload.attempts,
+        loading: false,
+        user: {
+          ...state.user,
+          elections: {
+            ...state.user.elections,
+            [payload.process]: {
+              ...state.user.elections[payload.process],
+              remainingAttempts: payload.attempts,
+            },
           },
-        },
+        }
       }
     case SetConsumed:
-      payload = (action.payload as ConsumedPayload)
+      payload = (action.payload as SetConsumedPayload)
       return {
         ...state,
-        elections: {
-          ...state.elections,
-          [payload.process]: {
-            ...state.elections[payload.process],
-            consumed: payload.consumed,
+        loading: false,
+        user: {
+          ...state.user,
+          elections: {
+            ...state.user.elections,
+            [payload.process]: {
+              ...state.user.elections[payload.process],
+              consumed: payload.consumed,
+            },
           },
-        },
+        }
       }
-    case PhoneUpdate:
-      payload = (action.payload as PhonePayload)
+    case UpdatePhone:
+      payload = (action.payload as UpdatePhonePayload)
       return {
         ...state,
-        phone: {
-          country_code: payload.prefix,
-          national_number: payload.national,
-        },
+        loading: false,
+        user: {
+          ...state.user,
+          phone: {
+            country_code: payload.prefix,
+            national_number: payload.national,
+          },
+        }
       }
   }
 
   return state
 }
 
-export const useUserReducer = () => useReducer(userReducer, emptyUser)
+export const useUserReducer = () => useReducer(userReducer, UserStateEmpty)

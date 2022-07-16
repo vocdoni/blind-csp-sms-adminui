@@ -4,14 +4,7 @@ import { UserAction } from './hooks/use-user-reducer'
 
 type ShowError = (text: string, description?: string) => void
 type ShowSuccess = (text: string, description?: string) => void
-type CloneUserProps = {
-  showError: ShowError
-  showSuccess: ShowSuccess
-  client: AxiosInstance
-  user: UserData
-  setUser: SetUser
-  userDispatch: UserDispatch
-}
+
 type CreateUserProps = {
   showError: ShowError
   showSuccess: ShowSuccess
@@ -24,16 +17,18 @@ type Election = {
   challenge: number
 }
 
+type Phone = {
+  country_code: number
+  national_number: number
+}
+
 type UserData = {
   userID: string
   elections: {
     [id: string]: Election
   }
   extraData: string
-  phone: {
-    country_code: number
-    national_number: number
-  }
+  phone: Phone
 }
 
 type SetUser = (user: string) => void
@@ -49,16 +44,6 @@ type UserQueryProps = {
 
 type QueriesProps = UserQueryProps
 
-type UserSearchResultRowProps = Omit<UserQueryProps, 'clearRef'> & {
+type UserSearchResultRowProps = {
   hash: string
 }
-
-type PhoneNumberProps = {
-  client: AxiosInstance
-  user: UserData
-  userDispatch: UserDispatch
-  showError: ShowError
-  showSuccess: ShowSuccess
-}
-
-type UserActionsProps = PhoneNumberProps

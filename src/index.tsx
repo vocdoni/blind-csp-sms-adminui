@@ -1,4 +1,6 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+import { ApiProvider } from '@hooks/use-api'
+import { UserProvider } from '@hooks/use-user'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { App } from './App'
@@ -16,8 +18,12 @@ root.render(
   <React.StrictMode>
     <ColorModeScript />
     <ChakraProvider theme={theme}>
-      <ColorModeSwitcher justifySelf='flex-end' />
-      <App />
+      <ApiProvider>
+        <UserProvider>
+          <ColorModeSwitcher justifySelf='flex-end' />
+          <App />
+        </UserProvider>
+      </ApiProvider>
     </ChakraProvider>
   </React.StrictMode>,
 )

@@ -1,10 +1,24 @@
-import { Button, HStack } from '@chakra-ui/react'
-import { SetRemainingAttempts } from '@hooks/use-user-reducer'
-import { UserActionsProps } from '@localtypes'
+import { HamburgerIcon } from '@chakra-ui/icons'
+import {
+  Button,
+  IconButton,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Portal,
+  Stack,
+} from '@chakra-ui/react'
+import { ATTEMPTS_MAX_DEFAULT } from '@constants'
+import { useUser } from '@hooks/use-user'
+import { Election } from '@localtypes'
 import { useState } from 'react'
+import { If, Then } from 'react-if'
 
-const ElectionActions = ({client, user, showError, showSuccess, userDispatch}: UserActionsProps) => {
-  const [loading, setLoading] = useState<boolean>(false)
+const ElectionActions = ({election}: {election: Election}) => {
+  const { addAttempt, user, resetAttempts, setConsumed } = useUser()
+  const [ loading, setLoading ] = useState<boolean>(false)
 
   if (!user || !user.elections || (user.elections && !Object.values(user.elections).length)) {
     // actions take the very first election, we should not show em' unless an election is found
@@ -12,48 +26,67 @@ const ElectionActions = ({client, user, showError, showSuccess, userDispatch}: U
   }
 
   return (
-    <HStack w='full' alignItems='stretch' display='flex'>
-      <Button
-        disabled={loading}
-        isLoading={loading}
-        w='full'
-        onClick={() => {
-          setLoading(true)
-          ;(async () => {
-            const [ election ] = Object.values(user.elections)
-            const attempts = 5 - election.remainingAttempts
-            let successful = 0
-            if (!attempts) {
-              showSuccess('User already has 5 attempts')
-              return setLoading(false)
-            }
-            for (let i = 0; i < attempts; i++) {
-              await client.get(`/addAttempt/${user.userID}/${election.electionId}`)
-                // eslint-disable-next-line no-loop-func
-                .then(() => {
-                  successful++
-                })
-                .catch((e: any) => {
-                  console.error(`error adding attempt to user ${user.userID}:`, e)
-                  showError('Error adding attempt', 'Check console for more details')
-                })
-            }
-            if (successful === attempts) {
-              userDispatch({
-                type: SetRemainingAttempts,
-                payload: {
-                  process: election.electionId,
-                  attempts: 5,
-                }
-              })
-              showSuccess('SMS attempts reset successfully')
-            }
-            setLoading(false)
-          })()
-        }}>
-        Reset 5 SMS limit
-      </Button>
-    </HStack>
+    <Popover>
+      <PopoverTrigger>
+        <IconButton
+          aria-label='Actions'
+          icon={<HamburgerIcon />}
+        />
+      </PopoverTrigger>
+      <Portal>
+        <PopoverContent maxW='200px'>
+          <PopoverArrow />
+          <PopoverBody>
+          <Stack alignItems='stretch' display='flex'>
+            <If condition={election.remainingAttempts < ATTEMPTS_MAX_DEFAULT}>
+              <Then>
+                <Button
+                  size='sm'
+                  disabled={loading}
+                  isLoading={loading}
+                  onClick={() => {
+                    setLoading(true)
+                    ;(async () => {
+                      await addAttempt(election.electionId)
+                    })()
+                    setLoading(false)
+                  }}>
+                  Add an attempt
+                </Button>
+                <Button
+                  size='sm'
+                  disabled={loading}
+                  isLoading={loading}
+                  onClick={() => {
+                    setLoading(true)
+                    ;(async () => {
+                      await resetAttempts(election.electionId)
+                    })()
+                    setLoading(false)
+                  }}>
+                  Reset 5 SMS limit
+                </Button>
+              </Then>
+            </If>
+            <Button
+              size='sm'
+              disabled={loading}
+              colorScheme='orange'
+              isLoading={loading}
+              onClick={() => {
+                setLoading(true)
+                ;(async () => {
+                  await setConsumed(election.electionId, !election.consumed)
+                })()
+                setLoading(false)
+              }}>
+              Set {!!election.consumed && 'NOT'} consumed
+            </Button>
+          </Stack>
+          </PopoverBody>
+        </PopoverContent>
+      </Portal>
+    </Popover>
   )
 }
 
