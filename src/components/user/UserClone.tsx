@@ -62,7 +62,7 @@ const UserClone = () => {
   }
 
   return (
-    <VStack align='left' spacing={3}>
+    <VStack align='left'>
       <Heading size='md'>
         Clone user
         <IconButton

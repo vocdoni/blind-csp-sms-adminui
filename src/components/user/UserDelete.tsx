@@ -6,6 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  Heading,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
@@ -18,6 +19,7 @@ const UserDelete = () => {
 
   return (
     <>
+      <Heading size='md'>Delete user</Heading>
       <AlertDialog
         isOpen={isOpen}
         onClose={onClose}
