@@ -17,13 +17,8 @@ import { useState } from 'react'
 import { If, Then } from 'react-if'
 
 const ElectionActions = ({election}: {election: Election}) => {
-  const { addAttempt, user, resetAttempts, setConsumed } = useUser()
+  const { addAttempt, resetAttempts, setConsumed } = useUser()
   const [ loading, setLoading ] = useState<boolean>(false)
-
-  if (!user || !user.elections || (user.elections && !Object.values(user.elections).length)) {
-    // actions take the very first election, we should not show em' unless an election is found
-    return null
-  }
 
   return (
     <Popover>
