@@ -117,6 +117,10 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
           attempts: user.elections[process].remainingAttempts + 1,
         },
       })
+      toast({
+        status: 'success',
+        title: 'Attempt added',
+      })
       return true
     } catch (e) {
       toast({
