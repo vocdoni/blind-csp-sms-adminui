@@ -1,31 +1,25 @@
 import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-ui/react'
-import { useApi } from '@hooks/use-api'
 import { useUser } from '@hooks/use-user'
 import { Set } from '@hooks/use-user-reducer'
-import { UserData, UserSearchResultRowProps } from '@localtypes'
+import { UserSearchResultRowProps } from '@localtypes'
 import { hidePhoneNumber } from '@utils'
 import { useEffect, useState } from 'react'
 
 const UserSearchResultRow = ({hash}: UserSearchResultRowProps) => {
   const { colorMode } = useColorMode()
-  const { client } = useApi()
-  const { dispatch, hashRef } = useUser()
+  const { dispatch, get, hashRef, indexed } = useUser()
   const [ loaded, setLoaded ] = useState(false)
-  const [ user, setUser ] = useState<UserData>()
 
   useEffect(() => {
     ;(async () => {
       if (loaded) return
-      const response = await client.get(`/user/${hash}`)
+      if (!indexed[hash]) {
+        await get(hash)
+      }
       setLoaded(true)
-      setUser(response.data)
     })()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, hash])
-
-  if (!user) {
-    return null
-  }
+  }, [loaded, hash, indexed])
 
   const onClick = () => {
     dispatch({
@@ -51,6 +45,9 @@ const UserSearchResultRow = ({hash}: UserSearchResultRowProps) => {
         : 'var(--chakra-colors-gray-100) !important',
     },
   }
+
+  const user = indexed[hash]
+  if (!user) return null
 
   const phone = '+' + user.phone.country_code + hidePhoneNumber(user.phone.national_number.toString())
 

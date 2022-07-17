@@ -1,6 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons'
-import { FormControl, IconButton, Input, Stack, Tag, useToast } from '@chakra-ui/react'
-import { useApi } from '@hooks/use-api'
+import { FormControl, IconButton, Input, Stack, Tag } from '@chakra-ui/react'
+import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
 import { useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
@@ -9,11 +9,9 @@ import UserSearchResultRow from './UserSearchResultRow'
 const UserQuery = () => {
   const birthdateRef = useRef<HTMLInputElement>(null)
   const memberRef = useRef<HTMLInputElement>(null)
-  const toast = useToast()
   const [ loading, setLoading ] = useState(false)
   const [ loaded, setLoaded ] = useState(false)
-  const [ results, setResults ] = useState([])
-  const { client } = useApi()
+  const { search, searchResults: results } = useUser()
 
   const makeQuery = async () => {
     setLoaded(false)
@@ -28,17 +26,10 @@ const UserQuery = () => {
 
     setLoading(true)
     try {
-      const results = await client.post('/search', {term})
-      setResults(results.data.users)
-      setLoaded(true)
+      await search(term)
+      term.trim().length > 0 && setLoaded(true)
     } catch (e) {
-      toast({
-        status: 'error',
-        title: 'Error searching member',
-        description: 'Check console for details',
-      })
-
-      console.error(e)
+      setLoaded(false)
     }
     setLoading(false)
   }

@@ -7,9 +7,11 @@ import { useApi } from './use-api'
 import {
   Loading,
   Reset,
+  SearchSetResults,
   Set,
   SetConsumed,
   SetError,
+  SetIndexed,
   SetRemainingAttempts,
   UpdatePhone,
   UserState,
@@ -26,6 +28,49 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
   const timeoutRef = useRef<NodeJS.Timeout>()
 
   const { user } = state
+
+  const get = async (user: string) => {
+    try {
+      const { data } = await client.get(`/user/${user}`)
+      dispatch({
+        type: SetIndexed,
+        payload: data,
+      })
+
+      return data
+    } catch (e) {
+      console.error(`error getting user ${user}`, e)
+    }
+  }
+
+  const search = async (term: string) => {
+    dispatch({type: Loading})
+
+    if (!term.trim().length) {
+      dispatch({
+        type: SearchSetResults,
+        payload: [],
+      })
+
+      return
+    }
+
+    try {
+      const { data } = await client.post('/search', {term})
+
+      dispatch({
+        type: SearchSetResults,
+        payload: data.users,
+      })
+    } catch (e) {
+      toast({
+        status: 'error',
+        title: 'Error searching user',
+        description: 'Check console for details',
+      })
+      console.error(e)
+    }
+  }
 
   const set = (user: string) => {
     if (!user.length) {
@@ -284,9 +329,11 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     ...state,
     addAttempt,
     clone,
+    get,
     reset,
     remove,
     resetAttempts,
+    search,
     set,
     setConsumed,
     updatePhone,
