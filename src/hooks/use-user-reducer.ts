@@ -117,15 +117,16 @@ export type UserAction = {
 }
 
 const setIndexedValue = (indexed: Indexed, process: string, field: string, value: any) => {
-  Object.values(indexed).forEach((user, i) => {
+  for (const key in indexed) {
+    const user = indexed[key]
     if (!(user.elections && user.elections[process])) {
-      return
+      continue
     }
-    indexed[i].elections[process] = {
-      ...indexed[i].elections[process],
+    indexed[key].elections[process] = {
+      ...indexed[key].elections[process],
       [field]: value,
     }
-  })
+  }
 
   return indexed
 }
