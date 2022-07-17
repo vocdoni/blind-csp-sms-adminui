@@ -173,10 +173,19 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       }
       // mark old as consumed (only if there are elections, ofc..)
       if (user.elections && Object.keys(user.elections).length > 0) {
-        const [ election ] = Object.values(user.elections)
-        const consumed = await client.get(`/setConsumed/${user.userID}/${election.electionId}/true`)
-        if (!consumed.data.ok) {
-          throw new Error('Could not set old user consumed status (setConsumed)')
+        for (const process in user.elections) {
+          const consumed = await client.get(`/setConsumed/${user.userID}/${process}/true`)
+          if (consumed.data.ok !== 'true') {
+            console.warn('Could not set old user consumed status (setConsumed)', consumed)
+            continue
+          }
+          dispatch({
+            type: SetConsumed,
+            payload: {
+              consumed: true,
+              process,
+            },
+          })
         }
       }
       // retrieve the new user data (and store it to state)
