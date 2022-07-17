@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { If, Then } from 'react-if'
-import PhoneUpdate from './PhoneUpdate'
+import UserPhoneUpdate from './UserPhoneUpdate'
 import UserClone from './UserClone'
 import UserDataDisplay from './UserDataDisplay'
 import UserDelete from './UserDelete'
@@ -42,7 +42,7 @@ const UserData = () => {
       <If condition={user.userID.length > 0}>
         <Then>
           <UserDataDisplay user={user} />
-          <PhoneUpdate />
+          <UserPhoneUpdate />
           <UserClone />
           <UserDelete />
         </Then>

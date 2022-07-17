@@ -12,7 +12,7 @@ import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
 import { useRef, useState } from 'react'
 
-const PhoneUpdate = () => {
+const UserPhoneUpdate = () => {
   const phoneRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
   const { updatePhone } = useUser()
@@ -77,4 +77,4 @@ const PhoneUpdate = () => {
   )
 }
 
-export default PhoneUpdate
+export default UserPhoneUpdate
