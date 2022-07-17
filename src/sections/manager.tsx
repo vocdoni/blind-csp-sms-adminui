@@ -9,7 +9,7 @@ const Manager = () => {
   const { token } = useApi()
 
   return (
-    <Stack maxW='6xl' mx='auto' px={[2, 6]}>
+    <Stack maxW='6xl' mx='auto' px={[2, 6]} mb={24}>
       <Stack direction='row'>
         <ApiFields />
       </Stack>

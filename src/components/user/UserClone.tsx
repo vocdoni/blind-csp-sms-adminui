@@ -71,7 +71,7 @@ const UserClone = () => {
           onClick={generateRandomCredentials}
           icon={<RepeatIcon />}
           ml={4}
-          size='sm'
+          size='xs'
         />
       </Heading>
       <HStack>

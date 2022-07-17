@@ -1,3 +1,4 @@
+import { DeleteIcon } from '@chakra-ui/icons'
 import {
   AlertDialog,
   AlertDialogBody,
@@ -7,6 +8,7 @@ import {
   AlertDialogOverlay,
   Button,
   Heading,
+  Stack,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
@@ -18,7 +20,7 @@ const UserDelete = () => {
   const cancelRef = useRef<HTMLButtonElement>(null)
 
   return (
-    <>
+    <Stack>
       <Heading size='md'>Delete user</Heading>
       <AlertDialog
         isOpen={isOpen}
@@ -39,16 +41,26 @@ const UserDelete = () => {
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme='red' onClick={remove} ml={3}>
+            <Button
+              colorScheme='red'
+              onClick={remove}
+              ml={3}
+              rightIcon={<DeleteIcon />}
+            >
               Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Button w='full' colorScheme='red' onClick={onOpen}>
+      <Button
+        w='full'
+        colorScheme='red'
+        onClick={onOpen}
+        rightIcon={<DeleteIcon />}
+      >
         Delete user
       </Button>
-    </>
+    </Stack>
   )
 }
 

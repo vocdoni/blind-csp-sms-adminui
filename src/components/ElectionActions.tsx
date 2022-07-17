@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
   Portal,
   Stack,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
 import { useUser } from '@hooks/use-user'
@@ -66,7 +67,7 @@ const ElectionActions = ({election}: {election: Election}) => {
             <Button
               size='sm'
               disabled={loading}
-              colorScheme='orange'
+              colorScheme={useColorModeValue('yellow', 'orange')}
               isLoading={loading}
               onClick={() => {
                 setLoading(true)

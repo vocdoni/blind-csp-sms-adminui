@@ -1,3 +1,4 @@
+import { CheckIcon } from '@chakra-ui/icons'
 import { Button, FormControl, Heading, Input, Stack } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
@@ -23,7 +24,7 @@ const UserElectionAdd = () => {
   }
 
   return (
-    <>
+    <Stack>
       <Heading size='md'>Add election</Heading>
       <Stack direction='row'>
         <FormControl id='election'>
@@ -34,11 +35,16 @@ const UserElectionAdd = () => {
             onKeyUp={(e) => enterCallback(e, add)}
           />
         </FormControl>
-        <Button onClick={add} isLoading={loading} disabled={loading}>
+        <Button
+          onClick={add}
+          isLoading={loading}
+          disabled={loading}
+          rightIcon={<CheckIcon />}
+        >
           Add
         </Button>
       </Stack>
-    </>
+    </Stack>
   )
 }
 

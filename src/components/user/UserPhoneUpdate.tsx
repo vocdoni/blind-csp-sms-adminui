@@ -49,7 +49,7 @@ const UserPhoneUpdate = () => {
   }
 
   return (
-    <VStack align='left' spacing={4}>
+    <VStack align='left'>
       <Heading size='md'>
         Update phone number
       </Heading>
