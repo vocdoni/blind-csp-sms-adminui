@@ -5,6 +5,8 @@ import { formatError } from '@utils'
 import { createContext, ReactNode, useContext, useRef } from 'react'
 import { useApi } from './use-api'
 import {
+  AddElection,
+  Loaded,
   Loading,
   Reset,
   SearchSetResults,
@@ -105,7 +107,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
     try {
       const response = await client.get(`/addAttempt/${user.userID}/${process}`)
-      if (!response.data.ok) {
+      if (response.data.ok !== 'true') {
         throw new Error('got API failure during addattempt')
       }
       dispatch({
@@ -123,6 +125,35 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
         description: 'Check console for details',
       })
       console.error('Could not add attempt:', e)
+    }
+    return false
+  }
+
+  const addElection = async (process: string) : Promise<boolean> => {
+    dispatch({type: Loading})
+
+    try {
+      const response = await client.get(`/addElection/${user.userID}/${process}`)
+      if (response.data.ok !== 'true') {
+        throw new Error('got API failure during addattempt')
+      }
+      dispatch({
+        type: AddElection,
+        payload: process,
+      })
+      toast({
+        status: 'success',
+        title: 'Election added successfully',
+      })
+      return true
+    } catch (e) {
+      dispatch({type: Loaded})
+      toast({
+        status: 'error',
+        title: 'Couldn\'t add election',
+        description: 'Check console for details',
+      })
+      console.error('Could not add election:', e)
     }
     return false
   }
@@ -162,6 +193,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
       return true
     } catch (e) {
+      dispatch({type: Loaded})
       toast({
         status: 'error',
         title: 'Couldn\'t clone user',
@@ -173,6 +205,8 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
   }
 
   const remove = async () => {
+    dispatch({type: Loading})
+
     try {
       const response = await client.get(`/delUser/${user.userID}`)
       if (response.data.ok !== 'true') {
@@ -185,6 +219,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       reset()
       return true
     } catch (e) {
+      dispatch({type: Loaded})
       toast({
         status: 'error',
         title: 'Could not remove user',
@@ -197,6 +232,8 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
   }
 
   const updatePhone = async (phone: string) => {
+    dispatch({type: Loading})
+
     try {
       const response = await client.get(`/setPhone/${user.userID}/${phone}`)
       if (response.data.ok !== 'true') {
@@ -217,15 +254,16 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
       return true
     } catch (e) {
+      dispatch({type: Loaded})
       toast({
         status: 'error',
         title: 'Could not update phone',
         description: 'Check the console for details',
       })
       console.error(e)
-
-      return false
     }
+
+    return false
   }
 
   const reset = () => {
@@ -328,6 +366,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
   const value = {
     ...state,
     addAttempt,
+    addElection,
     clone,
     get,
     reset,

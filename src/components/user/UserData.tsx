@@ -14,6 +14,7 @@ import UserPhoneUpdate from './UserPhoneUpdate'
 import UserClone from './UserClone'
 import UserDataDisplay from './UserDataDisplay'
 import UserDelete from './UserDelete'
+import UserElectionAdd from './UserElectionAdd'
 
 const UserData = () => {
   const { set, error, user, reset, hashRef } = useUser()
@@ -42,9 +43,12 @@ const UserData = () => {
       <If condition={user.userID.length > 0}>
         <Then>
           <UserDataDisplay user={user} />
-          <UserPhoneUpdate />
-          <UserClone />
-          <UserDelete />
+          <Stack spacing={6}>
+            <UserPhoneUpdate />
+            <UserElectionAdd />
+            <UserClone />
+            <UserDelete />
+          </Stack>
         </Then>
       </If>
     </Stack>

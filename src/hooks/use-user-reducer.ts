@@ -1,5 +1,6 @@
 import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
-import { UserData } from '@localtypes'
+import { Election, UserData } from '@localtypes'
+import { ATTEMPTS_MAX_DEFAULT } from '@constants'
 
 const emptyUser : UserData = {
   userID: '',
@@ -24,6 +25,7 @@ export interface UserState {
   searchResults: string[]
   user: UserData
   addAttempt: (process: string) => Promise<boolean>
+  addElection: (process: string) => Promise<boolean>
   clone: (user: string) => Promise<boolean>
   get: (user: string) => Promise<void>
   updatePhone: (phone: string) => Promise<boolean>
@@ -47,6 +49,7 @@ export const UserStateEmpty : UserState = {
     ...emptyUser,
   },
   addAttempt: (process) => Promise.reject(false),
+  addElection: (process) => Promise.reject(false),
   clone: (user) => Promise.reject(false),
   get: (user) => Promise.reject(),
   updatePhone: (phone) => Promise.reject(false),
@@ -59,6 +62,8 @@ export const UserStateEmpty : UserState = {
   dispatch: (action) => {},
 }
 
+export const AddElection = 'user:election:add'
+export const Loaded = 'user:loaded'
 export const Loading = 'user:loading'
 export const Reset = 'user:reset'
 export const SearchSetResults = 'user:search:results'
@@ -69,6 +74,7 @@ export const SetError = 'user:error:set'
 export const SetRemainingAttempts = 'user:remaining_attempts:set'
 export const UpdatePhone = 'user:phone:update'
 
+type AddElectionPayload = string
 type SetRemainingAttemptsPayload = {
   process: string
   attempts: number
@@ -85,7 +91,9 @@ type SetConsumedPayload = {
 type SetPayload = UserData
 type SetErrorPayload = Error
 
-type UserType = typeof Loading
+type UserType = typeof AddElection
+  | typeof Loaded
+  | typeof Loading
   | typeof Reset
   | typeof SearchSetResults
   | typeof Set
@@ -95,7 +103,8 @@ type UserType = typeof Loading
   | typeof SetRemainingAttempts
   | typeof UpdatePhone
 
-type UserPayload = SearchSetResultsPayload
+type UserPayload = AddElectionPayload
+  | SearchSetResultsPayload
   | SetConsumedPayload
   | SetErrorPayload
   | SetPayload
@@ -124,6 +133,29 @@ const setIndexedValue = (indexed: Indexed, process: string, field: string, value
 const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: UserAction) => {
   let payload
   switch (action.type) {
+    case AddElection:
+      payload = (action.payload as AddElectionPayload)
+      return {
+        ...state,
+        loading: false,
+        user: {
+          ...state.user,
+          elections: {
+            ...state.user.elections,
+            [payload]: {
+              consumed: false,
+              electionId: payload,
+              remainingAttempts: ATTEMPTS_MAX_DEFAULT,
+            } as Election,
+          },
+        }
+      }
+    case Loaded:
+      return {
+        ...state,
+        loaded: true,
+        loading: false,
+      }
     case Loading:
       return {
         ...state,
