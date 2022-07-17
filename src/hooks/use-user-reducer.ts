@@ -65,6 +65,7 @@ export const UserStateEmpty : UserState = {
 export const AddElection = 'user:election:add'
 export const Loaded = 'user:loaded'
 export const Loading = 'user:loading'
+export const Remove = 'user:remove'
 export const Reset = 'user:reset'
 export const SearchSetResults = 'user:search:results'
 export const Set = 'user:set'
@@ -75,13 +76,10 @@ export const SetRemainingAttempts = 'user:remaining_attempts:set'
 export const UpdatePhone = 'user:phone:update'
 
 type AddElectionPayload = string
+type RemovePayload = string
 type SetRemainingAttemptsPayload = {
   process: string
   attempts: number
-}
-type UpdatePhonePayload = {
-  prefix: number
-  national: number
 }
 type SearchSetResultsPayload = string[]
 type SetConsumedPayload = {
@@ -90,10 +88,15 @@ type SetConsumedPayload = {
 }
 type SetPayload = UserData
 type SetErrorPayload = Error
+type UpdatePhonePayload = {
+  prefix: number
+  national: number
+}
 
 type UserType = typeof AddElection
   | typeof Loaded
   | typeof Loading
+  | typeof Remove
   | typeof Reset
   | typeof SearchSetResults
   | typeof Set
@@ -132,7 +135,7 @@ const setIndexedValue = (indexed: Indexed, process: string, field: string, value
 }
 
 const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: UserAction) => {
-  let payload
+  let payload : UserPayload
   switch (action.type) {
     case AddElection:
       payload = (action.payload as AddElectionPayload)
@@ -163,6 +166,18 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
         loaded: false,
         loading: true,
       }
+    case Remove: {
+      payload = (action.payload as RemovePayload)
+      const indexed = {...state.indexed}
+      if (indexed[payload]) {
+        delete indexed[payload]
+      }
+
+      return {
+        ...state,
+        indexed,
+      }
+    }
     case Reset:
       return {
         ...state,

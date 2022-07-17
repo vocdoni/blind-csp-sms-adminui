@@ -3,7 +3,15 @@ import axios from 'axios'
 import { useContext, useEffect } from 'react'
 import { useRef } from 'react'
 import { createContext, ReactNode, RefObject } from 'react'
-import { ApiBaseReset, ApiBaseSet, ApiState, ApiStateEmpty, ApiTokenReset, ApiTokenSet, useApiReducer } from './use-api-reducer'
+import {
+  ApiBaseReset,
+  ApiBaseSet,
+  ApiState,
+  ApiStateEmpty,
+  ApiTokenReset,
+  ApiTokenSet,
+  useApiReducer,
+} from './use-api-reducer'
 
 export const ApiContext = createContext<ApiState>(ApiStateEmpty)
 
@@ -14,7 +22,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
 
   const dump = async () => {
     try {
-      const { data } = await api.client.get('/dump')
+      const { data } = await api.client.get('/smsapi/dump')
       if (typeof data !== 'object') {
         throw new Error('Unknown data received')
       }
@@ -55,7 +63,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
     }
 
     timeoutRef.current = setTimeout(() => {
-      axios.get(`${base}/ping`)
+      axios.get(`${base}/smsapi/ping`)
         .then(({data}) => {
           if (data !== '.\n') {
             throw new Error('Pong not received')
@@ -92,7 +100,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
     }
 
     timeoutRef.current = setTimeout(() => {
-      axios.get(`${api.base.url}/users`, {
+      axios.get(`${api.base.url}/smsapi/users`, {
         headers: {
           Authorization: `Bearer ${tokenRef.current?.value}`
         }

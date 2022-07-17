@@ -16,6 +16,7 @@ import { useUser } from '@hooks/use-user'
 import { Election } from '@localtypes'
 import { useState } from 'react'
 import { If, Then } from 'react-if'
+import UserAuthButton from './user/UserAuthButton'
 
 const ElectionActions = ({election}: {election: Election}) => {
   const { addAttempt, resetAttempts, setConsumed } = useUser()
@@ -34,6 +35,7 @@ const ElectionActions = ({election}: {election: Election}) => {
           <PopoverArrow />
           <PopoverBody>
           <Stack alignItems='stretch' display='flex'>
+            <UserAuthButton election={election} />
             <If condition={election.remainingAttempts < ATTEMPTS_MAX_DEFAULT}>
               <Then>
                 <Button

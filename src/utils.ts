@@ -21,6 +21,18 @@ export const hidePhoneNumber = (phone: string) =>
 
 
 export const formatError = (e: any) => {
+  if (typeof e === 'object' && e.hasOwnProperty('response')) {
+    const { response: { data } } = e
+
+    if (
+      typeof data === 'object' &&
+      data.hasOwnProperty('error') &&
+      typeof data.error === 'string'
+    ) {
+      return new Error(data.error)
+    }
+  }
+
   if (typeof e === 'object' && e.hasOwnProperty('message')) {
     return new Error(e.message)
   }

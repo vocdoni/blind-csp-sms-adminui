@@ -8,6 +8,7 @@ import {
   AddElection,
   Loaded,
   Loading,
+  Remove,
   Reset,
   SearchSetResults,
   Set,
@@ -33,7 +34,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
   const get = async (user: string) => {
     try {
-      const { data } = await client.get(`/user/${user}`)
+      const { data } = await client.get(`/smsapi/user/${user}`)
       dispatch({
         type: SetIndexed,
         payload: data,
@@ -58,7 +59,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     }
 
     try {
-      const { data } = await client.post('/search', {term})
+      const { data } = await client.post('/smsapi/search', {term})
 
       dispatch({
         type: SearchSetResults,
@@ -87,7 +88,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     timeoutRef.current = setTimeout(() => {
       dispatch({type: Loading})
 
-      client.get(`/user/${user}`)
+      client.get(`/smsapi/user/${user}`)
         .then(({data}: {data: UserData}) => {
           dispatch({
             type: Set,
@@ -106,7 +107,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/addAttempt/${user.userID}/${process}`)
+      const response = await client.get(`/smsapi/addAttempt/${user.userID}/${process}`)
       if (response.data.ok !== 'true') {
         throw new Error('got API failure during addattempt')
       }
@@ -137,7 +138,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/addElection/${user.userID}/${process}`)
+      const response = await client.get(`/smsapi/addElection/${user.userID}/${process}`)
       if (response.data.ok !== 'true') {
         throw new Error('got API failure during addattempt')
       }
@@ -167,14 +168,14 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
     try {
       // clone user
-      const response = await client.get(`/cloneUser/${user.userID}/${hash}`)
+      const response = await client.get(`/smsapi/cloneUser/${user.userID}/${hash}`)
       if (!response.data.ok) {
         throw new Error('got API failure during cloneUser')
       }
       // mark old as consumed (only if there are elections, ofc..)
       if (user.elections && Object.keys(user.elections).length > 0) {
         for (const process in user.elections) {
-          const consumed = await client.get(`/setConsumed/${user.userID}/${process}/true`)
+          const consumed = await client.get(`/smsapi/setConsumed/${user.userID}/${process}/true`)
           if (consumed.data.ok !== 'true') {
             console.warn('Could not set old user consumed status (setConsumed)', consumed)
             continue
@@ -189,7 +190,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
         }
       }
       // retrieve the new user data (and store it to state)
-      const { data } = await client.get(`/user/${hash}`)
+      const { data } = await client.get(`/smsapi/user/${hash}`)
       if (!(data as UserData).userID) {
         throw new Error('Could not fetch new user data')
       }
@@ -221,13 +222,17 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/delUser/${user.userID}`)
+      const response = await client.get(`/smsapi/delUser/${user.userID}`)
       if (response.data.ok !== 'true') {
         throw new Error('API returned KO')
       }
       toast({
         status: 'success',
         title: 'User removed successfully',
+      })
+      dispatch({
+        type: Remove,
+        payload: user.userID,
       })
       reset()
       return true
@@ -248,7 +253,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/setPhone/${user.userID}/${phone}`)
+      const response = await client.get(`/smsapi/setPhone/${user.userID}/${phone}`)
       if (response.data.ok !== 'true') {
         throw new Error('API returned KO')
       }
@@ -307,7 +312,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     }
 
     for (let i = 0; i < attempts; i++) {
-      await client.get(`/addAttempt/${user.userID}/${election.electionId}`)
+      await client.get(`/smsapi/addAttempt/${user.userID}/${election.electionId}`)
         // eslint-disable-next-line no-loop-func
         .then(() => {
           successful++
@@ -351,7 +356,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     }
 
     try {
-      await client.get(`/setConsumed/${user.userID}/${election.electionId}/${consumed.toString()}`)
+      await client.get(`/smsapi/setConsumed/${user.userID}/${election.electionId}/${consumed.toString()}`)
       dispatch({
         type: SetConsumed,
         payload: {

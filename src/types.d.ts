@@ -47,3 +47,7 @@ type QueriesProps = UserQueryProps
 type UserSearchResultRowProps = {
   hash: string
 }
+
+type UserAuthProps = {
+  election: Election
+}
