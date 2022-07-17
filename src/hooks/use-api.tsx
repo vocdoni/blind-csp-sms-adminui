@@ -12,6 +12,33 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const toast = useToast()
 
+  const dump = async () => {
+    try {
+      const { data } = await api.client.get('/dump')
+      if (typeof data !== 'object') {
+        throw new Error('Unknown data received')
+      }
+
+      // create fake element to run file download
+      const json = encodeURIComponent(JSON.stringify(data, null, 2))
+      const elem = document.createElement('a')
+      elem.style.display = 'none'
+      elem.setAttribute('href', 'data:application/json;charset=utf-8,' + json)
+      elem.setAttribute('download', `csp-sms-dump-${(new Date()).getTime()}.json`)
+      document.body.appendChild(elem)
+
+      elem.click()
+      document.body.removeChild(elem)
+    } catch (e) {
+      toast({
+        status: 'error',
+        title: 'Could not dump DB',
+        description: 'Check console for details',
+      })
+      console.error('Could not dump DB:', e)
+    }
+  }
+
   const saveBase = (baseRef: RefObject<HTMLInputElement>) => {
     if (!baseRef.current) {
       return
@@ -102,6 +129,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
 
   const value = {
     ...api,
+    dump,
     saveBase,
     saveToken,
   }

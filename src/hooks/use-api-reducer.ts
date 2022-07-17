@@ -31,6 +31,7 @@ export interface ApiState {
     id: string
   }
   client: AxiosInstance
+  dump: () => Promise<void>
   saveBase: (baseRef: RefObject<HTMLInputElement>) => void
   saveToken: (tokenRef: RefObject<HTMLInputElement>) => void
 }
@@ -45,6 +46,7 @@ export const ApiStateEmpty : ApiState = {
     id: '',
   },
   client: axios.create(),
+  dump: () => Promise.resolve(),
   saveBase: (baseRef) => {},
   saveToken: (baseRef) => {},
 }
