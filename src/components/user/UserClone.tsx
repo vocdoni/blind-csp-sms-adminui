@@ -97,7 +97,6 @@ const UserClone = () => {
         rightIcon={<CheckIcon />}
         isLoading={loading}
         disabled={loading}
-        w='full'
       >
         Clone user
       </Button>

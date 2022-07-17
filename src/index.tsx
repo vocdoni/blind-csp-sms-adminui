@@ -4,7 +4,6 @@ import { UserProvider } from '@hooks/use-user'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { App } from './App'
-import { ColorModeSwitcher } from './ColorModeSwitcher'
 import reportWebVitals from './reportWebVitals'
 import * as serviceWorker from './serviceWorker'
 import theme from './theme'
@@ -20,7 +19,6 @@ root.render(
     <ChakraProvider theme={theme}>
       <ApiProvider>
         <UserProvider>
-          <ColorModeSwitcher justifySelf='flex-end' />
           <App />
         </UserProvider>
       </ApiProvider>

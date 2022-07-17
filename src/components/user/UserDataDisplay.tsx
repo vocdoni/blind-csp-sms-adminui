@@ -12,7 +12,7 @@ const UserDataDisplay = ({user}: {user: UserData }) => {
   return (
     <VStack spacing={2} align='left' p={3} layerStyle={`code${colorMode}`}>
       <Heading size='sm'>User ID</Heading>
-      <Box textOverflow='ellipsis' overflow='hidden' w='full' whiteSpace='pre' title={user.userID}>
+      <Box textOverflow='ellipsis' overflow='hidden' whiteSpace='pre' title={user.userID}>
         {user.userID}
       </Box>
       <Box>

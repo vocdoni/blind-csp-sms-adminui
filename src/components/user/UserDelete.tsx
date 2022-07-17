@@ -53,7 +53,6 @@ const UserDelete = () => {
         </AlertDialogContent>
       </AlertDialog>
       <Button
-        w='full'
         colorScheme='red'
         onClick={onOpen}
         rightIcon={<DeleteIcon />}

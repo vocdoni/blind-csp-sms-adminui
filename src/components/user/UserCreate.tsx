@@ -90,7 +90,6 @@ const UserCreate = ({showError, client} : CreateUserProps) => {
           onClick={createUser}
           isLoading={loading}
           disabled={loading}
-          w='full'
           size='sm'
         >
           Create user

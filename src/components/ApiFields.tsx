@@ -1,5 +1,6 @@
 import { FormControl, FormLabel, Input } from '@chakra-ui/react'
 import { useApi } from '@hooks/use-api'
+import { ColorModeSwitcher } from '@src/ColorModeSwitcher'
 import { enterCallback } from '@utils'
 import { useEffect, useRef, useState } from 'react'
 import { If, Then } from 'react-if'
@@ -20,6 +21,7 @@ const ApiFields = () => {
 
   return (
     <>
+      <ColorModeSwitcher />
       <FormControl id='token'>
         <FormLabel>API base</FormLabel>
         <Input

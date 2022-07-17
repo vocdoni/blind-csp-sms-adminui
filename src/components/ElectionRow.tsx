@@ -8,9 +8,9 @@ const ElectionRow = ({election}: {election: Election}) => {
   const remainingColor = election.remainingAttempts > 0 ? 'green' : 'pink'
 
   return (
-    <Stack direction='row' w='full'>
-      <Stack direction='column' maxW='calc(100% - 4rem)'>
-        <Text w='full' textOverflow='ellipsis' overflow='hidden' whiteSpace='pre'>
+    <Stack direction='row'>
+      <Stack direction='column' maxW='calc(var(--chakra-sizes-full) - var(--chakra-sizes-12))'>
+        <Text textOverflow='ellipsis' overflow='hidden' whiteSpace='pre'>
           <Link
             title={election.electionId}
             href={`${EXPLORER}/processes/show/#/${election.electionId}`}
@@ -19,7 +19,7 @@ const ElectionRow = ({election}: {election: Election}) => {
             {election.electionId}
           </Link>
         </Text>
-        <Stack direction='row' w='full' alignItems='stretch'>
+        <Stack direction='row' alignItems='stretch'>
           <Tag colorScheme={remainingColor}>
             {election.remainingAttempts} remaining attempts
           </Tag>

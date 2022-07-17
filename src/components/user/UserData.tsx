@@ -20,7 +20,7 @@ const UserData = () => {
   const { set, error, user, reset, hashRef } = useUser()
 
   return (
-    <Stack w='full'>
+    <Stack>
       <FormControl id='user' isInvalid={error !== null}>
         <InputGroup>
           <Input

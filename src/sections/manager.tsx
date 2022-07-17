@@ -9,7 +9,7 @@ const Manager = () => {
   const { token } = useApi()
 
   return (
-    <Stack maxW='6xl' mx='auto' px={[2, 6]} mb={24}>
+    <Stack maxW='6xl' mx='auto' px={[2, 6]} mb={24} mt={4}>
       <Stack direction='row'>
         <ApiFields />
       </Stack>
@@ -19,15 +19,14 @@ const Manager = () => {
             rounded={'lg'}
             bg={useColorModeValue('white', 'gray.700')}
             boxShadow={'lg'}
-            p={8}
-            pt={6}
-            display='flex'
+            p={[4, 8]}
+            pt={[4, 6]}
           >
-            <Stack direction={['column', 'column', 'row']} w='full' spacing={2}>
+            <Stack direction={['column', 'column', 'row']} spacing={0}>
               <Box w='full' maxW={['100%', '100%', '50%']}>
                 <UserQuery />
               </Box>
-              <Box w='full' maxW={['100%', '100%', '50%']}>
+              <Box w='full' maxW={['100%', '100%', '50%']} pl={2}>
                 <UserData />
               </Box>
             </Stack>

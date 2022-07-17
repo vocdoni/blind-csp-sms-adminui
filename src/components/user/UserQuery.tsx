@@ -31,7 +31,7 @@ const UserQuery = () => {
   }
 
   return (
-    <Stack w='full'>
+    <Stack>
       <Stack direction='row'>
         <FormControl id='member'>
           <Input
