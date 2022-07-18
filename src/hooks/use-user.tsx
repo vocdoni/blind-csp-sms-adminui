@@ -312,6 +312,14 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     state.hashRef.current.value = ''
   }
 
+  const resetAll = () => {
+    reset()
+    dispatch({
+      type: SearchSetResults,
+      payload: [],
+    })
+  }
+
   const resetAttempts = async (process: string) => {
     const election = user.elections[process]
     if (!election) {
@@ -411,6 +419,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     get,
     getAll,
     reset,
+    resetAll,
     remove,
     resetAttempts,
     search,

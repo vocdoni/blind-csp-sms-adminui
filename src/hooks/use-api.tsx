@@ -48,6 +48,26 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
     }
   }
 
+  const restore = async (json: object) => {
+    try {
+      const { data } = await api.client.post('/smsapi/import', json)
+
+      if (data.ok !== 'true') {
+        throw new Error('API returned KO')
+      }
+
+      return true
+    } catch (e) {
+      toast({
+        status: 'error',
+        title: 'Could not restore DB',
+        description: formatError(e).message,
+      })
+      console.warn('Could not restore DB:', e)
+    }
+    return false
+  }
+
   const saveBase = (baseRef: RefObject<HTMLInputElement>) => {
     if (!baseRef.current) {
       return
@@ -140,6 +160,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
   const value = {
     ...api,
     dump,
+    restore,
     saveBase,
     saveToken,
   }

@@ -1,10 +1,11 @@
-import { FormControl, FormLabel, Input } from '@chakra-ui/react'
+import { ButtonGroup, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import { useApi } from '@hooks/use-api'
 import { ColorModeSwitcher } from '@src/ColorModeSwitcher'
 import { enterCallback } from '@utils'
 import { useEffect, useRef, useState } from 'react'
 import { If, Then } from 'react-if'
 import ApiDump from './ApiDump'
+import ApiImport from './ApiImport'
 
 const ApiFields = () => {
   const tokenRef = useRef<HTMLInputElement>(null)
@@ -50,7 +51,10 @@ const ApiFields = () => {
       </If>
       <If condition={base.valid && token.valid}>
         <Then>
-          <ApiDump />
+          <ButtonGroup isAttached>
+            <ApiDump />
+            <ApiImport />
+          </ButtonGroup>
         </Then>
       </If>
     </>

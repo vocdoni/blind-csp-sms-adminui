@@ -36,3 +36,20 @@ export const formatError = (e: any) => {
   console.warn('unkown error to be formated:', e)
   return new Error('Unknown error to be formated')
 }
+
+/**
+ * Handy Promise for reading File with FileReader
+ *
+ * @param File Which file to read the contents from.
+ */
+ export const FileReaderAsText = (file: File) : Promise<string>=> new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    if (!e.target) return reject()
+
+    resolve(e.target.result as string)
+  }
+  reader.onerror = reject
+
+  reader.readAsText(file)
+})

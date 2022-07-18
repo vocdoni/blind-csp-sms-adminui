@@ -32,6 +32,7 @@ export interface UserState {
   updatePhone: (phone: string) => Promise<boolean>
   remove: () => Promise<boolean>
   reset: () => void
+  resetAll: () => void
   resetAttempts: (process: string) => Promise<boolean>
   search: (term: string) => Promise<void>
   set: (user: string) => void
@@ -57,6 +58,7 @@ export const UserStateEmpty : UserState = {
   updatePhone: (phone) => Promise.reject(false),
   remove: () => Promise.reject(false),
   reset: () => {},
+  resetAll: () => {},
   resetAttempts: (process) => Promise.reject(false),
   search: (term) => Promise.reject(),
   set: (user) => {},
