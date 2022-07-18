@@ -22,6 +22,7 @@ const ApiDump = () => {
       disabled={loading || !token.valid || !base.valid}
       onClick={dumpDB}
       alignSelf='end'
+      variant='ghost'
       size='sm'
     />
   )

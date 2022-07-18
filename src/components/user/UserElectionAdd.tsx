@@ -37,9 +37,9 @@ const UserElectionAdd = () => {
         </FormControl>
         <Button
           onClick={add}
+          rightIcon={<CheckIcon />}
           isLoading={loading}
           disabled={loading}
-          rightIcon={<CheckIcon />}
         >
           Add
         </Button>

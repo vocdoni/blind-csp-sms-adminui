@@ -3,9 +3,8 @@ import {
   Button,
   FormControl,
   Heading,
-  HStack,
   Input,
-  VStack,
+  Stack,
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { useRef } from 'react'
@@ -44,11 +43,11 @@ const UserClone = () => {
   }
 
   return (
-    <VStack align='left'>
+    <Stack>
       <Heading size='md'>
         Clone user
       </Heading>
-      <HStack>
+      <Stack direction='row'>
         <FormControl id='hash'>
           <Input
             type='text'
@@ -57,16 +56,17 @@ const UserClone = () => {
             onKeyUp={handleKeyUp}
           />
         </FormControl>
-      </HStack>
-      <Button
-        onClick={cloneUser}
-        rightIcon={<CheckIcon />}
-        isLoading={loading}
-        disabled={loading}
-      >
-        Clone user
-      </Button>
-    </VStack>
+        <Button
+          onClick={cloneUser}
+          rightIcon={<CheckIcon />}
+          isLoading={loading}
+          disabled={loading}
+          px={6}
+        >
+          Clone user
+        </Button>
+      </Stack>
+    </Stack>
   )
 }
 

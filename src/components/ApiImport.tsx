@@ -54,7 +54,7 @@ const ApiImport = () => {
     setLoading(false)
   }
 
-  const restoreDb = async () => {
+  const importDb = async () => {
     setLoading(true)
     if (await restore(contents)) {
       resetAll()
@@ -92,7 +92,7 @@ const ApiImport = () => {
             <Button
               colorScheme='red'
               ml={3}
-              onClick={restoreDb}
+              onClick={importDb}
               disabled={loading}
               isLoading={loading}
               rightIcon={<FiAlertTriangle />}
@@ -103,8 +103,8 @@ const ApiImport = () => {
         </AlertDialogContent>
       </AlertDialog>
       <IconButton
-        aria-label='Restore DB'
-        title='Restore DB'
+        aria-label='Import DB'
+        title='Import DB'
         icon={<FiUpload />}
         variant='ghost'
         colorScheme='yellow'
