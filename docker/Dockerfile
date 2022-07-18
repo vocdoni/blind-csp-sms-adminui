@@ -11,7 +11,7 @@ ENV REACT_APP_KECCAK_SALT=${KECCAK_SALT}
 
 WORKDIR /app
 ADD package.json package-lock.json /app/
-RUN npm ci
+RUN npm i --production=false
 
 ADD . /app
 RUN npm run build
