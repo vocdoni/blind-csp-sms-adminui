@@ -1,33 +1,29 @@
 import { Button, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
 import { CreateUserProps } from '@localtypes'
-import { generateHashFromValues } from '@utils'
 import React, { useRef, useState } from 'react'
 
 
 const UserCreate = ({showError, client} : CreateUserProps) => {
   const extraRef = useRef<HTMLInputElement>(null)
-  const codeRef = useRef<HTMLInputElement>(null)
-  const pinRef = useRef<HTMLInputElement>(null)
+  const hashRef = useRef<HTMLInputElement>(null)
   const electionRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
   const createUser = async () => {
-    if (!codeRef.current || !pinRef.current || !electionRef.current || !extraRef.current) {
+    if (!hashRef.current || !electionRef.current || !extraRef.current) {
       return showError('try again')
     }
 
     const extra = extraRef.current.value
-    const code = codeRef.current.value
-    const pin = pinRef.current.value
+    const hash = hashRef.current.value
     const election = electionRef.current.value
 
-    if (!code.length || !pin.length || !election.length || !extra.length || loading) {
+    if (!hash.length || !election.length || !extra.length || loading) {
       return showError('Required fields are missing')
     }
 
     setLoading(true)
     try {
-      const hash = generateHashFromValues(code, pin)
       const response = await client.post(`/newUser/${hash}`, {
         extra,
         phone: 'missing :|',
@@ -61,19 +57,11 @@ const UserCreate = ({showError, client} : CreateUserProps) => {
             onKeyUp={handleKeyUp}
           />
         </FormControl>
-        <FormControl id='code'>
+        <FormControl id='hash'>
           <FormLabel>Member id</FormLabel>
           <Input
             type='text'
-            ref={codeRef}
-            onKeyUp={handleKeyUp}
-          />
-        </FormControl>
-        <FormControl id='pin'>
-          <FormLabel>User pin</FormLabel>
-          <Input
-            type='text'
-            ref={pinRef}
+            ref={hashRef}
             onKeyUp={handleKeyUp}
           />
         </FormControl>

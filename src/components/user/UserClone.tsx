@@ -1,56 +1,38 @@
-import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
+import { CheckIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
   Heading,
   HStack,
-  IconButton,
   Input,
   VStack,
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
-import { generateHashFromValues } from '@utils'
 import { useRef } from 'react'
 
 const UserClone = () => {
-  const codeRef = useRef<HTMLInputElement>(null)
-  const pinRef = useRef<HTMLInputElement>(null)
+  const hashRef = useRef<HTMLInputElement>(null)
   const { loading, clone } = useUser()
 
-  const getRandDigits = (cut = 10) => {
-    return parseInt((Math.random() * 1000000000000).toString(), 10).toString().substring(0, cut)
-  }
-
-  const generateRandomCredentials = () => {
-    if (!codeRef.current || !pinRef.current) {
-      return
-    }
-    codeRef.current.value = getRandDigits(7)
-    pinRef.current.value = getRandDigits(4)
-  }
-
   const clearFields = () => {
-    if (!codeRef.current || !pinRef.current) {
+    if (!hashRef.current) {
       return
     }
-    codeRef.current.value = ''
-    pinRef.current.value = ''
+    hashRef.current.value = ''
   }
 
   const cloneUser = async () => {
-    if (!codeRef.current || !pinRef.current) {
+    if (!hashRef.current) {
       return
     }
 
-    const code = codeRef.current.value
-    const pin = pinRef.current.value
+    const hash = hashRef.current.value
 
-    if (!code.length || !pin.length) {
+    if (!hash.length) {
       return
     }
 
-    const newhash = generateHashFromValues(code, pin)
-    if (await clone(newhash)) {
+    if (await clone(hash)) {
       clearFields()
     }
   }
@@ -65,29 +47,13 @@ const UserClone = () => {
     <VStack align='left'>
       <Heading size='md'>
         Clone user
-        <IconButton
-          aria-label='Generate new pair'
-          title='Generate new pair'
-          onClick={generateRandomCredentials}
-          icon={<RepeatIcon />}
-          ml={4}
-          size='xs'
-        />
       </Heading>
       <HStack>
-        <FormControl id='code'>
+        <FormControl id='hash'>
           <Input
             type='text'
-            placeholder='New user code'
-            ref={codeRef}
-            onKeyUp={handleKeyUp}
-          />
-        </FormControl>
-        <FormControl id='pin'>
-          <Input
-            type='text'
-            placeholder='New user pin'
-            ref={pinRef}
+            placeholder='New user hash'
+            ref={hashRef}
             onKeyUp={handleKeyUp}
           />
         </FormControl>

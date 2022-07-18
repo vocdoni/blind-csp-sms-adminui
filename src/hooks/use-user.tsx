@@ -233,7 +233,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Couldn\'t clone user',
-        description: 'Try changing credentials & check console for more details',
+        description: formatError(e).message,
       })
       console.error('Could not clone user:', e)
     }
