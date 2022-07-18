@@ -42,7 +42,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
       return data
     } catch (e) {
-      console.error(`error getting user ${user}`, e)
+      console.warn(`error getting user ${user}`, e)
     }
   }
 
@@ -62,7 +62,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
         title: 'Could not get all users',
         description: formatError(e).message,
       })
-      console.error('Could not get all users:', e)
+      console.warn('Could not get all users:', e)
     }
 
     return false
@@ -91,9 +91,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Error searching user',
-        description: 'Check console for details',
+        description: formatError(e).message,
       })
-      console.error(e)
+      console.warn('Error searching user', e)
     }
   }
 
@@ -149,9 +149,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Couldn\'t add attempt',
-        description: 'Check console for details',
+        description: formatError(e).message,
       })
-      console.error('Could not add attempt:', e)
+      console.warn('Couldn\'t add attempt:', e)
     }
     return false
   }
@@ -178,9 +178,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Couldn\'t add election',
-        description: 'Check console for details',
+        description: formatError(e).message,
       })
-      console.error('Could not add election:', e)
+      console.warn('Couldn\'t add election:', e)
     }
     return false
   }
@@ -199,7 +199,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
         for (const process in user.elections) {
           const consumed = await client.get(`/smsapi/setConsumed/${user.userID}/${process}/true`)
           if (consumed.data.ok !== 'true') {
-            console.warn('Could not set old user consumed status (setConsumed)', consumed)
+            console.warn(`Could not set old user consumed status (setConsumed) for process ${process}`, consumed)
             continue
           }
           dispatch({
@@ -235,7 +235,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
         title: 'Couldn\'t clone user',
         description: formatError(e).message,
       })
-      console.error('Could not clone user:', e)
+      console.warn('Couldn\'t clone user:', e)
     }
     return false
   }
@@ -263,9 +263,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Could not remove user',
-        description: 'Check console for details',
+        description: formatError(e).message,
       })
-      console.error('Could not remove user:', e)
+      console.warn('Could not remove user:', e)
     }
 
     return false
@@ -298,9 +298,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Could not update phone',
-        description: 'Check the console for details',
+        description: formatError(e).message,
       })
-      console.error(e)
+      console.warn('Could not update phone', e)
     }
 
     return false
@@ -340,12 +340,12 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
           successful++
         })
         .catch((e: any) => {
-          console.error(`error adding attempt to user ${user.userID}:`, e)
           toast({
             status: 'error',
             title: 'Error adding attempt',
-            description: 'Check console for more details',
+            description: formatError(e).message,
           })
+          console.warn(`Error adding attempt to user ${user.userID}:`, e)
         })
     }
     dispatch({
@@ -394,10 +394,10 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     } catch (e: any) {
       toast({
         status: 'error',
-        title: 'Sorry, couldn\'t do that',
-        description: 'Check console for more details',
+        title: 'Could not set consumed field',
+        description: formatError(e).message,
       })
-      console.error(`error setting consumed to user ${user.userID}:`, e)
+      console.warn(`Could not set consumed field for user ${user.userID}:`, e)
     }
 
     return false

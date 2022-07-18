@@ -1,4 +1,5 @@
 import { useToast } from '@chakra-ui/react'
+import { formatError } from '@utils'
 import axios from 'axios'
 import { useContext, useEffect } from 'react'
 import { useRef } from 'react'
@@ -41,9 +42,9 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
       toast({
         status: 'error',
         title: 'Could not dump DB',
-        description: 'Check console for details',
+        description: formatError(e).message,
       })
-      console.error('Could not dump DB:', e)
+      console.warn('Could not dump DB:', e)
     }
   }
 
@@ -80,7 +81,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
             status: 'error',
             title: 'Invalid API base',
           })
-          console.warn(e)
+          console.warn('Invalid API base', e)
         })
     }, 500)
   }
@@ -114,12 +115,13 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
           title: 'Token is valid',
         })
       })
-      .catch(() => {
+      .catch((e) => {
         dispatch({type: ApiTokenReset})
         toast({
           status: 'error',
           title: 'Invalid token',
         })
+        console.warn('Invalid token:', e)
       })
     }, 500)
   }

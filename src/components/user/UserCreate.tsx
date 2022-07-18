@@ -33,7 +33,7 @@ const UserCreate = ({showError, client} : CreateUserProps) => {
       }
     } catch (e) {
       showError('There was an error creating the user', 'Check the console for more details')
-      console.error(e)
+      console.warn('There was an error creating the user', e)
     }
     setLoading(false)
   }

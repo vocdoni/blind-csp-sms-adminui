@@ -56,7 +56,7 @@ const UserAuth = ({election}: UserAuthProps) => {
         title: 'Got error requesting OTP',
         description: formatError(e).message,
       })
-      console.error(e)
+      console.warn('Got error requesting OTP:', e)
     }
     setRequesting(false)
   }
@@ -90,7 +90,7 @@ const UserAuth = ({election}: UserAuthProps) => {
     } catch (e) {
       setRequested(false)
       setError(formatError(e).message)
-      console.error(e)
+      console.warn('Could not check OTP:', e)
     }
     otpRef.current.value = ''
     setChecking(false)
