@@ -5,7 +5,7 @@ import { UserSearchResultRowProps } from '@localtypes'
 import { hidePhoneNumber } from '@utils'
 import { useEffect, useState } from 'react'
 
-const UserSearchResultRow = ({hash}: UserSearchResultRowProps) => {
+const UserSearchResultRow = ({hash, dataRef}: UserSearchResultRowProps) => {
   const { colorMode } = useColorMode()
   const { dispatch, get, hashRef, indexed } = useUser()
   const [ loaded, setLoaded ] = useState(false)
@@ -26,10 +26,12 @@ const UserSearchResultRow = ({hash}: UserSearchResultRowProps) => {
       type: Set,
       payload: user,
     })
-    if (!hashRef.current) {
-      return
+    if (hashRef.current) {
+      hashRef.current.value = user.userID
     }
-    hashRef.current.value = user.userID
+    if (dataRef.current) {
+      window.scrollTo(0, dataRef.current.offsetTop)
+    }
   }
 
   const styles = {

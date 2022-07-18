@@ -41,6 +41,7 @@ const ApiFields = () => {
               type='text'
               size='sm'
               ref={tokenRef}
+              autoFocus
               onKeyUp={(e) => enterCallback(e, () => saveToken(tokenRef))}
               onChange={() => saveToken(tokenRef)}
             />

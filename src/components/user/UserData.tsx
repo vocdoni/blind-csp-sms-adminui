@@ -15,12 +15,13 @@ import UserClone from './UserClone'
 import UserDataDisplay from './UserDataDisplay'
 import UserDelete from './UserDelete'
 import UserElectionAdd from './UserElectionAdd'
+import { RefObject } from 'react'
 
-const UserData = () => {
+const UserData = ({dataRef}: {dataRef: RefObject<HTMLDivElement>}) => {
   const { set, error, user, reset, hashRef } = useUser()
 
   return (
-    <Stack>
+    <Stack ref={dataRef}>
       <FormControl id='user' isInvalid={error !== null}>
         <InputGroup>
           <Input

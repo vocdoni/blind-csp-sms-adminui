@@ -46,6 +46,7 @@ type QueriesProps = UserQueryProps
 
 type UserSearchResultRowProps = {
   hash: string
+  dataRef: RefObject<HTMLDivElement>
 }
 
 type UserAuthProps = {

@@ -2,11 +2,11 @@ import { HamburgerIcon, SearchIcon, SmallCloseIcon } from '@chakra-ui/icons'
 import { ButtonGroup, FormControl, IconButton, Input, InputGroup, InputRightElement, Stack, Tag } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
-import { useRef, useState } from 'react'
+import { RefObject, useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
 import UserSearchResultRow from './UserSearchResultRow'
 
-const UserQuery = () => {
+const UserQuery = ({dataRef}: {dataRef: RefObject<HTMLDivElement>}) => {
   const termRef = useRef<HTMLInputElement>(null)
   const [ loading, setLoading ] = useState(false)
   const [ loaded, setLoaded ] = useState(false)
@@ -104,7 +104,7 @@ const UserQuery = () => {
               <Stack align='left' className='results-list'>
               {
                 results.map((hash, k) =>
-                  <UserSearchResultRow key={k} hash={hash} />
+                  <UserSearchResultRow key={k} hash={hash} dataRef={dataRef} />
                 )
               }
               </Stack>

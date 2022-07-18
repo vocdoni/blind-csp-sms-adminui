@@ -3,10 +3,12 @@ import ApiFields from '@components/ApiFields'
 import UserData from '@components/user/UserData'
 import UserQuery from '@components/user/UserQuery'
 import { useApi } from '@hooks/use-api'
+import { useRef } from 'react'
 import { If, Then } from 'react-if'
 
 const Manager = () => {
   const { token } = useApi()
+  const dataRef = useRef<HTMLDivElement>(null)
 
   return (
     <Stack maxW='6xl' mx='auto' px={[2, 6]} mb={24} mt={4}>
@@ -22,12 +24,12 @@ const Manager = () => {
             p={[4, 8]}
             pt={[4, 6]}
           >
-            <Stack direction={['column', 'column', 'row']} spacing={0}>
+            <Stack direction={['column', 'column', 'row']} spacing={0} rowGap={4}>
               <Box w='full' maxW={['100%', '100%', '50%']}>
-                <UserQuery />
+                <UserQuery dataRef={dataRef} />
               </Box>
-              <Box w='full' maxW={['100%', '100%', '50%']} pl={2}>
-                <UserData />
+              <Box w='full' maxW={['100%', '100%', '50%']} pl={[0, 0, 2]}>
+                <UserData dataRef={dataRef} />
               </Box>
             </Stack>
           </Box>
