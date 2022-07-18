@@ -28,7 +28,7 @@ const Manager = () => {
               <Box w='full' maxW={['100%', '100%', '50%']}>
                 <UserQuery dataRef={dataRef} />
               </Box>
-              <Box w='full' maxW={['100%', '100%', '50%']} pl={[0, 0, 2]}>
+              <Box w='full' maxW={['100%', '100%', '50%']} pl={[0, 0, 6]}>
                 <UserData dataRef={dataRef} />
               </Box>
             </Stack>

@@ -1,4 +1,3 @@
-import { DeleteIcon } from '@chakra-ui/icons'
 import {
   AlertDialog,
   AlertDialogBody,
@@ -18,7 +17,7 @@ import { useApi } from '@hooks/use-api'
 import { useUser } from '@hooks/use-user'
 import { FileReaderAsText, formatError } from '@utils'
 import { ChangeEvent, useRef, useState } from 'react'
-import { FiUpload } from 'react-icons/fi'
+import { FiAlertTriangle, FiUpload } from 'react-icons/fi'
 
 const ApiImport = () => {
   const cancelRef = useRef<HTMLButtonElement>(null)
@@ -81,7 +80,7 @@ const ApiImport = () => {
 
           <AlertDialogBody>
             <Stack spacing={4}>
-              <Text>You're about to import a backup containing {Object.keys(contents?.users).length} users and destroy the old DB data.</Text>
+              <Text>You're about to import a backup containing {Object.keys(contents?.users).length} users and overwrite any matching data.</Text>
               <Text>Are you sure? You can't undo this action afterwards.</Text>
             </Stack>
           </AlertDialogBody>
@@ -96,9 +95,9 @@ const ApiImport = () => {
               onClick={restoreDb}
               disabled={loading}
               isLoading={loading}
-              rightIcon={<DeleteIcon />}
+              rightIcon={<FiAlertTriangle />}
             >
-              Yeah, restore it
+              Yeah, import it
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
