@@ -58,7 +58,8 @@ jobs:
           platforms: linux/amd64
           push: true
           build-args: |
-            COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            EXPLORER=https://azeno.explorer.vote
+            API_BASE=https://csp-sms.vocdoni.net/smsapi
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
