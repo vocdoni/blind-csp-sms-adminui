@@ -50,16 +50,28 @@ jobs:
           echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )"
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Push to Docker Hub and ghcr.io (main)
+      - name: Push to Docker Hub and ghcr.io (dev)
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:dev, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest, ghcr.io/vocdoni/${{ github.event.repository.name }}:dev, ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+
+      - name: Push to Docker Hub and ghcr.io (azeno)
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/Dockerfile
+          build-args: |
+            EXPLORER=https://azeno.explorer.vote
+            API_BASE=https://csp-sms.vocdoni.net
           platforms: linux/amd64
           push: true
-          build-args: |
-            COMMIT_SHA=${{ steps.var.outputs.sha_short }}
           tags: |
-            vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
-            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
-
+            vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-azeno,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-azeno
