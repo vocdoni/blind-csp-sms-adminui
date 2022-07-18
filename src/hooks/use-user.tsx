@@ -46,6 +46,28 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     }
   }
 
+  const getAll = async () => {
+    try {
+      const { data } = await client.get(`/smsapi/users`)
+
+      dispatch({
+        type: SearchSetResults,
+        payload: data.users,
+      })
+
+      return data.users
+    } catch (e) {
+      toast({
+        status: 'error',
+        title: 'Could not get all users',
+        description: formatError(e).message,
+      })
+      console.error('Could not get all users:', e)
+    }
+
+    return false
+  }
+
   const search = async (term: string) => {
     dispatch({type: Loading})
 
@@ -387,6 +409,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     addElection,
     clone,
     get,
+    getAll,
     reset,
     remove,
     resetAttempts,

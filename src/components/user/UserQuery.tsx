@@ -1,5 +1,5 @@
-import { SearchIcon } from '@chakra-ui/icons'
-import { FormControl, IconButton, Input, Stack, Tag } from '@chakra-ui/react'
+import { HamburgerIcon, SearchIcon, SmallCloseIcon } from '@chakra-ui/icons'
+import { ButtonGroup, FormControl, IconButton, Input, InputGroup, InputRightElement, Stack, Tag } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { enterCallback } from '@utils'
 import { useRef, useState } from 'react'
@@ -10,7 +10,7 @@ const UserQuery = () => {
   const termRef = useRef<HTMLInputElement>(null)
   const [ loading, setLoading ] = useState(false)
   const [ loaded, setLoaded ] = useState(false)
-  const { search, searchResults: results } = useUser()
+  const { getAll, search, searchResults: results } = useUser()
 
   const makeQuery = async () => {
     setLoaded(false)
@@ -30,23 +30,72 @@ const UserQuery = () => {
     setLoading(false)
   }
 
+  const findAll = async () => {
+    setLoaded(false)
+    setLoading(true)
+    if (termRef.current) {
+      termRef.current.value = ''
+    }
+
+    try {
+      await getAll()
+      setLoaded(true)
+    } catch (e) {
+      setLoaded(false)
+    }
+    setLoading(false)
+  }
+
+  const resultsLoaded = loaded && results && results.length > 0
+
   return (
     <Stack>
       <Stack direction='row'>
         <FormControl id='member'>
-          <Input
-            type='text'
-            placeholder={`search term`}
-            ref={termRef}
-            onKeyUp={(e) => enterCallback(e, makeQuery)}
-          />
+          <InputGroup>
+            <Input
+              type='text'
+              placeholder={`search term`}
+              ref={termRef}
+              onKeyUp={(e) => enterCallback(e, makeQuery)}
+            />
+            <InputRightElement width={16}>
+              <ButtonGroup isAttached>
+                <IconButton
+                  aria-label='Clear results'
+                  title='Clear results'
+                  variant='ghost'
+                  size='xs'
+                  onClick={() => {
+                    search('')
+                    setLoaded(false)
+                    if (!termRef.current) return
+
+                    termRef.current.value = ''
+                    termRef.current.focus()
+                  }}
+                  icon={<SmallCloseIcon />}
+                  disabled={!resultsLoaded}
+                />
+                <IconButton
+                  aria-label='Search'
+                  title='Search'
+                  size='xs'
+                  onClick={makeQuery}
+                  icon={<SearchIcon />}
+                  isLoading={loading}
+                  disabled={loading}
+                />
+              </ButtonGroup>
+            </InputRightElement>
+          </InputGroup>
         </FormControl>
         <IconButton
-          aria-label='create'
-          onClick={makeQuery}
-          icon={<SearchIcon />}
+          aria-label='Get all users'
+          title='Get all users'
+          icon={<HamburgerIcon />}
           isLoading={loading}
-          disabled={loading}
+          onClick={findAll}
         />
       </Stack>
       <If condition={loaded && results && results.length > 0}>

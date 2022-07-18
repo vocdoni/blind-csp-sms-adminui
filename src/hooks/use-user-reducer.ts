@@ -28,6 +28,7 @@ export interface UserState {
   addElection: (process: string) => Promise<boolean>
   clone: (user: string) => Promise<boolean>
   get: (user: string) => Promise<void>
+  getAll: () => Promise<string[] | boolean>
   updatePhone: (phone: string) => Promise<boolean>
   remove: () => Promise<boolean>
   reset: () => void
@@ -52,6 +53,7 @@ export const UserStateEmpty : UserState = {
   addElection: (process) => Promise.reject(false),
   clone: (user) => Promise.reject(false),
   get: (user) => Promise.reject(),
+  getAll: () => Promise.reject(false),
   updatePhone: (phone) => Promise.reject(false),
   remove: () => Promise.reject(false),
   reset: () => {},
