@@ -193,13 +193,20 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
         },
       }
 
-    case SearchSetResults:
+    case SearchSetResults: {
       payload = (action.payload as SearchSetResultsPayload)
+      // cleanup indexed data in order to ensure data update on new searches
+      const indexed  = {...state.indexed}
+      for (const hash of payload) {
+        delete indexed[hash]
+      }
       return {
         ...state,
+        indexed,
         loading: false,
         searchResults: payload,
       }
+    }
     case Set:
       payload = (action.payload as SetPayload)
       return {
