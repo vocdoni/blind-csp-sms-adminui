@@ -2,6 +2,7 @@ import { SearchIcon } from '@chakra-ui/icons'
 import { FormControl, HStack, IconButton, Input, Tag, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { Else, If, Then } from 'react-if'
+import { useSearch } from '../hooks/use-search'
 import { UserQueryProps } from '../types'
 import { enterCallback } from '../utils'
 import UserSearchResultRow from './UserSearchResultRow'
@@ -12,7 +13,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
   const memberRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [loaded, setLoaded] = useState<boolean>(false)
-  const [results, setResults] = useState<string[]>([])
+  const {results, setResults, reset} = useSearch()
 
   useEffect(() => {
     if (!clearRef.current || eventIsSet) return
@@ -29,6 +30,7 @@ const FindUserByExtraData = ({client, showError, clearRef, ...props} : UserQuery
 
   const makeQuery = async () => {
     setLoaded(false)
+    reset()
     if (!birthdateRef.current || !memberRef.current) {
       return showError('Try again')
     }

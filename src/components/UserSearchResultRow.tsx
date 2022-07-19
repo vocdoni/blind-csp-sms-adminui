@@ -1,5 +1,6 @@
 import { Box, Heading, HStack, Tag, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { useSearch } from '../hooks/use-search'
 import { SetUser } from '../hooks/use-user-reducer'
 import { UserData, UserSearchResultRowProps } from '../types'
 import { hidePhoneNumber } from '../utils'
@@ -8,6 +9,7 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
   const [loaded, setLoaded] = useState(false)
   const [user, setUser] = useState<UserData>()
   const { colorMode } = useColorMode()
+  const { setIndexed } = useSearch()
 
   useEffect(() => {
     ;(async () => {
@@ -15,6 +17,7 @@ const UserSearchResultRow = ({hash, client, setUser: setUserHash, userDispatch}:
       const response = await client.get(`/user/${hash}`)
       setLoaded(true)
       setUser(response.data)
+      setIndexed(response.data)
     })()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, hash])

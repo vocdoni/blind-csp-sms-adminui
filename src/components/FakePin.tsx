@@ -1,6 +1,7 @@
 import { CheckIcon, RepeatIcon } from '@chakra-ui/icons'
 import { Button, FormControl, Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
+import { useSearch } from '../hooks/use-search'
 import { SetUser } from '../hooks/use-user-reducer'
 import { FakePinProps } from '../types'
 import { generateHashFromValues } from '../utils'
@@ -9,6 +10,7 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
   const codeRef = useRef<HTMLInputElement>(null)
   const pinRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const { indexed } = useSearch()
 
   const getRandDigits = (cut = 10) => {
     return parseInt((Math.random() * 1000000000000).toString(), 10).toString().substring(0, cut)
@@ -45,6 +47,23 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
     setLoading(true)
     const newhash = generateHashFromValues(code, pin)
     try {
+      // check if user has all results consumed
+      let checked = 0, total = 0
+      for (const i in indexed) {
+        const u = indexed[i]
+        if (!u.elections) {
+          continue
+        }
+        for (const k in u.elections) {
+          const e = u.elections[k]
+          total++
+          e.consumed && checked++
+        }
+      }
+      if (total === checked) {
+        throw new Error('User has all elections already consumed')
+      }
+
       // clone user
       const response = await client.get(`/cloneUser/${user.userID}/${newhash}`)
       if (!response.data.ok) {
@@ -71,8 +90,12 @@ const FakePin = ({showError, showSuccess, user, client, setUser, userDispatch}: 
       })
       clearFields()
       showSuccess('User cloned successfully', 'New user data already loaded')
-    } catch (e) {
-      showError('Couldn\'t clone user.', 'Try changing credentials & check console for more details')
+    } catch (e: Error | any) {
+      let msg = 'Try changing credentials & check console for more details'
+      if (e && typeof e === 'object' && e.hasOwnProperty('message')) {
+        msg = e.message
+      }
+      showError('Couldn\'t clone user.', msg)
       console.error(e)
     }
     setLoading(false)

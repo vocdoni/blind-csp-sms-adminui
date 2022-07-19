@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { App } from './App'
 import { ColorModeSwitcher } from './ColorModeSwitcher'
+import { SearchProvider } from './hooks/use-search'
 import reportWebVitals from './reportWebVitals'
 import * as serviceWorker from './serviceWorker'
 import theme from './theme'
@@ -16,8 +17,10 @@ root.render(
   <React.StrictMode>
     <ColorModeScript />
     <ChakraProvider theme={theme}>
-      <ColorModeSwitcher justifySelf='flex-end' />
-      <App />
+      <SearchProvider>
+        <ColorModeSwitcher justifySelf='flex-end' />
+        <App />
+      </SearchProvider>
     </ChakraProvider>
   </React.StrictMode>,
 )
