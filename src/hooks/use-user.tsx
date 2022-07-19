@@ -19,7 +19,7 @@ import {
   UpdatePhone,
   UserState,
   UserStateEmpty,
-  useUserReducer,
+  useUserReducer
 } from './use-user-reducer'
 
 export const UserContext = createContext<UserState>(UserStateEmpty)
@@ -116,6 +116,10 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
             type: Set,
             payload: data,
           })
+          // update hash input value in case we call set from other sides
+          if (state.hashRef.current) {
+            state.hashRef.current.value = user
+          }
         }).catch((e) => {
           dispatch({
             type: SetError,
@@ -271,14 +275,28 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     return false
   }
 
-  const updatePhone = async (phone: string) => {
+  const setUserData = async (data: {extra?: string, phone?: string}) => {
     dispatch({type: Loading})
-
     try {
-      const response = await client.get(`/smsapi/setPhone/${user.userID}/${phone}`)
+      const response = await client.post(`/smsapi/setUserData/${user.userID}`, data)
       if (response.data.ok !== 'true') {
         throw new Error('API returned KO')
       }
+
+      dispatch({type: Loaded})
+
+      return response.data
+    } catch (e) {
+      dispatch({type: Loaded})
+
+      throw e
+    }
+  }
+
+  const updatePhone = async (phone: string) => {
+    try {
+      await setUserData({phone})
+
       dispatch({
         type: UpdatePhone,
         payload: {
@@ -294,7 +312,6 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
       return true
     } catch (e) {
-      dispatch({type: Loaded})
       toast({
         status: 'error',
         title: 'Could not update phone',

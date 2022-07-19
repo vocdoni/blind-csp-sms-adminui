@@ -1,87 +1,62 @@
-import { Button, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
-import { CreateUserProps } from '@localtypes'
-import React, { useRef, useState } from 'react'
+import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react'
+import { useUserCreate } from '@hooks/use-user-create'
+import { enterCallback } from '@utils'
+import { ChangeEvent, useRef } from 'react'
 
 
-const UserCreate = ({showError, client} : CreateUserProps) => {
+const UserCreate = ({create}: {create: () => void}) => {
   const extraRef = useRef<HTMLInputElement>(null)
   const hashRef = useRef<HTMLInputElement>(null)
-  const electionRef = useRef<HTMLInputElement>(null)
-  const [loading, setLoading] = useState<boolean>(false)
+  const phoneRef = useRef<HTMLInputElement>(null)
+  const { data, setData } = useUserCreate()
 
-  const createUser = async () => {
-    if (!hashRef.current || !electionRef.current || !extraRef.current) {
-      return showError('try again')
+  const onChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
+    let value = ''
+    if (e.target.value) {
+      value = e.target.value
     }
-
-    const extra = extraRef.current.value
-    const hash = hashRef.current.value
-    const election = electionRef.current.value
-
-    if (!hash.length || !election.length || !extra.length || loading) {
-      return showError('Required fields are missing')
-    }
-
-    setLoading(true)
-    try {
-      const response = await client.post(`/newUser/${hash}`, {
-        extra,
-        phone: 'missing :|',
-      })
-      if (!response.data.ok) {
-        throw new Error('API said KO')
-      }
-    } catch (e) {
-      showError('There was an error creating the user', 'Check the console for more details')
-      console.warn('There was an error creating the user', e)
-    }
-    setLoading(false)
-  }
-
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return
-
-    createUser()
+    setData({
+      ...data,
+      [field]: value,
+    })
   }
 
   return (
     <>
-      <Heading size='md'>Create user assigned to election</Heading>
       <VStack>
+        <FormControl id='hash'>
+          <FormLabel>User hash</FormLabel>
+          <Input
+            type='text'
+            placeholder='abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe2'
+            ref={hashRef}
+            onChange={(e) => onChange(e, 'hash')}
+            onKeyUp={(e) => enterCallback(e, create)}
+            value={data?.hash}
+          />
+        </FormControl>
+        <FormControl id='phone'>
+          <FormLabel>Phone</FormLabel>
+          <Input
+            type='text'
+            placeholder='+34623696969'
+            ref={phoneRef}
+            onChange={(e) => onChange(e, 'phone')}
+            onKeyUp={(e) => enterCallback(e, create)}
+            value={data?.phone}
+          />
+        </FormControl>
         <FormControl id='extra'>
           <FormLabel>Extra data</FormLabel>
           <Input
             type='text'
-            placeholder='memberid2021 memberid2022 birthdate'
+            placeholder='the quick brown fox jumps over the lazy dog'
             ref={extraRef}
-            onKeyUp={handleKeyUp}
+            onChange={(e) => onChange(e, 'extra')}
+            onKeyUp={(e) => enterCallback(e, create)}
+            value={data?.extra || ''}
           />
         </FormControl>
-        <FormControl id='hash'>
-          <FormLabel>Member id</FormLabel>
-          <Input
-            type='text'
-            ref={hashRef}
-            onKeyUp={handleKeyUp}
-          />
-        </FormControl>
-        <FormControl id='election'>
-          <FormLabel>Election ID</FormLabel>
-          <Input
-            type='text'
-            ref={electionRef}
-            onKeyUp={handleKeyUp}
-          />
-        </FormControl>
-        <Button
-          aria-label='create'
-          onClick={createUser}
-          isLoading={loading}
-          disabled={loading}
-          size='sm'
-        >
-          Create user
-          </Button>
       </VStack>
     </>
   )

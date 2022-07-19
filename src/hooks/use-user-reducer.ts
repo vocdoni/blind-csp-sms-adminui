@@ -1,6 +1,6 @@
-import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
-import { Election, UserData } from '@localtypes'
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
+import { Election, UserData } from '@localtypes'
+import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
 
 const emptyUser : UserData = {
   userID: '',

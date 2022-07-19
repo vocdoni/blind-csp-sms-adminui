@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import { KeyboardEvent } from 'react'
 
 export const enterCallback = (e: KeyboardEvent<HTMLInputElement>, callback: () => void) => {
@@ -35,6 +36,17 @@ export const formatError = (e: any) => {
 
   console.warn('unkown error to be formated:', e)
   return new Error('Unknown error to be formated')
+}
+
+export const processApiResponse = (response: AxiosResponse) => {
+  if (!response.data.ok) {
+    throw new Error('API did not send ok field')
+  }
+  if (response.data.ok !== 'true') {
+    throw new Error('API said KO')
+  }
+
+  return response.data
 }
 
 /**
