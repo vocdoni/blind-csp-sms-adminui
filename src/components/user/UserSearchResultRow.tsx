@@ -4,6 +4,7 @@ import { Set } from '@hooks/use-user-reducer'
 import { UserSearchResultRowProps } from '@localtypes'
 import { hidePhoneNumber } from '@utils'
 import { useEffect, useState } from 'react'
+import { When } from 'react-if'
 
 const UserSearchResultRow = ({hash, dataRef}: UserSearchResultRowProps) => {
   const { colorMode } = useColorMode()
@@ -68,10 +69,12 @@ const UserSearchResultRow = ({hash, dataRef}: UserSearchResultRowProps) => {
           <Heading size='xs'>Phone</Heading>
           {phone}
         </Box>
-        <Box>
-          <Heading size='xs'>Extra data</Heading>
-          {user.extraData}
-        </Box>
+        <When condition={user.extraData}>
+          <Box>
+            <Heading size='xs'>Extra data</Heading>
+            {user.extraData}
+          </Box>
+        </When>
       </VStack>
     </Box>
   )

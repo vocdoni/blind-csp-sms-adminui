@@ -19,10 +19,14 @@ const UserDataDisplay = ({user}: {user: UserData }) => {
         <Heading size='xs'>Phone</Heading>
         {phone}
       </Box>
-      <Heading size='sm'>Extra data</Heading>
-      <Box>
-        {user.extraData}
-      </Box>
+      <If condition={user.extraData}>
+        <Then>
+          <Heading size='sm'>Extra data</Heading>
+          <Box>
+            {user.extraData}
+          </Box>
+        </Then>
+      </If>
       <If condition={user.elections && Object.keys(user.elections).length > 0}>
         <Then>
           {() => (
