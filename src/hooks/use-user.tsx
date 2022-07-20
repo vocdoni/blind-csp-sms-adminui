@@ -85,7 +85,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
       dispatch({
         type: SearchSetResults,
-        payload: data.users,
+        payload: data.users || [],
       })
     } catch (e) {
       toast({
