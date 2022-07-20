@@ -143,18 +143,29 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
   switch (action.type) {
     case AddElection:
       payload = (action.payload as AddElectionPayload)
+      const newElection = {
+        consumed: false,
+        electionId: payload,
+        remainingAttempts: ATTEMPTS_MAX_DEFAULT,
+      } as Election
       return {
         ...state,
         loading: false,
+        indexed: {
+          ...state.indexed,
+          [payload]: {
+            ...state.indexed[payload],
+            elections: {
+              ...state.indexed[payload].elections,
+              [payload]: newElection,
+            }
+          },
+        },
         user: {
           ...state.user,
           elections: {
             ...state.user.elections,
-            [payload]: {
-              consumed: false,
-              electionId: payload,
-              remainingAttempts: ATTEMPTS_MAX_DEFAULT,
-            } as Election,
+            [payload]: newElection,
           },
         }
       }
