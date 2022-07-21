@@ -1,9 +1,7 @@
 import { useToast } from '@chakra-ui/react'
-import { formatError } from '@utils'
+import { formatError, processApiResponse } from '@utils'
 import axios from 'axios'
-import { useContext, useEffect } from 'react'
-import { useRef } from 'react'
-import { createContext, ReactNode, RefObject } from 'react'
+import { createContext, ReactNode, RefObject, useContext, useEffect, useRef } from 'react'
 import {
   ApiBaseReset,
   ApiBaseSet,
@@ -11,7 +9,7 @@ import {
   ApiStateEmpty,
   ApiTokenReset,
   ApiTokenSet,
-  useApiReducer,
+  useApiReducer
 } from './use-api-reducer'
 
 export const ApiContext = createContext<ApiState>(ApiStateEmpty)
@@ -50,11 +48,7 @@ export const ApiProvider = ({children}: {children: ReactNode}) => {
 
   const restore = async (json: object) => {
     try {
-      const { data } = await api.client.post('/smsapi/import', json)
-
-      if (data.ok !== 'true') {
-        throw new Error('API returned KO')
-      }
+      await api.client.post('/smsapi/import', json).then(processApiResponse)
 
       return true
     } catch (e) {

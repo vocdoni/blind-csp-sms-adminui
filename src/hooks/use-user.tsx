@@ -157,10 +157,8 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/smsapi/addAttempt/${user.userID}/${process}`)
-      if (response.data.ok !== 'true') {
-        throw new Error('got API failure during addattempt')
-      }
+      await client.get(`/smsapi/addAttempt/${user.userID}/${process}`).then(processApiResponse)
+
       dispatch({
         type: SetRemainingAttempts,
         payload: {
@@ -188,10 +186,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/smsapi/addElection/${user.userID}/${process}`)
-      if (response.data.ok !== 'true') {
-        throw new Error('got API failure during addattempt')
-      }
+      await client.get(`/smsapi/addElection/${user.userID}/${process}`).then(processApiResponse)
       dispatch({
         type: AddElection,
         payload: process,
@@ -218,18 +213,18 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
     try {
       // clone user
-      const response = await client.get(`/smsapi/cloneUser/${user.userID}/${hash}`)
-      if (!response.data.ok) {
-        throw new Error('got API failure during cloneUser')
-      }
+      await client.get(`/smsapi/cloneUser/${user.userID}/${hash}`).then(processApiResponse)
+
       // mark old as consumed (only if there are elections, ofc..)
       if (user.elections && Object.keys(user.elections).length > 0) {
         for (const process in user.elections) {
-          const consumed = await client.get(`/smsapi/setConsumed/${user.userID}/${process}/true`)
-          if (consumed.data.ok !== 'true') {
-            console.warn(`Could not set old user consumed status (setConsumed) for process ${process}`, consumed)
+          try {
+            await client.get(`/smsapi/setConsumed/${user.userID}/${process}/true`).then(processApiResponse)
+          } catch (e) {
+            console.warn(`Could not set old user consumed status (setConsumed) for process ${process}`, e)
             continue
           }
+
           dispatch({
             type: SetConsumed,
             payload: {
@@ -272,10 +267,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     dispatch({type: Loading})
 
     try {
-      const response = await client.get(`/smsapi/delUser/${user.userID}`)
-      if (response.data.ok !== 'true') {
-        throw new Error('API returned KO')
-      }
+      await client.get(`/smsapi/delUser/${user.userID}`).then(processApiResponse)
       toast({
         status: 'success',
         title: 'User removed successfully',
