@@ -30,6 +30,7 @@ export interface UserState {
   get: (user: string) => Promise<void>
   getAll: () => Promise<string[] | boolean>
   remove: () => Promise<boolean>
+  removeElection: (election: string) => Promise<boolean>
   reset: () => void
   resetAll: () => void
   resetAttempts: (process: string) => Promise<boolean>
@@ -55,6 +56,7 @@ export const UserStateEmpty : UserState = {
   get: (user) => Promise.reject(),
   getAll: () => Promise.reject(false),
   remove: () => Promise.reject(false),
+  removeElection: (election) => Promise.reject(false),
   reset: () => {},
   resetAll: () => {},
   resetAttempts: (process) => Promise.reject(false),
@@ -68,6 +70,7 @@ export const AddElection = 'user:election:add'
 export const Loaded = 'user:loaded'
 export const Loading = 'user:loading'
 export const Remove = 'user:remove'
+export const RemoveElection = 'user:election:remove'
 export const Reset = 'user:reset'
 export const SearchSetResults = 'user:search:results'
 export const Set = 'user:set'
@@ -78,7 +81,7 @@ export const SetRemainingAttempts = 'user:remaining_attempts:set'
 export const Update = 'user:update'
 
 type AddElectionPayload = string
-
+type RemoveElectionPayload = string
 type RemovePayload = string
 type SetRemainingAttemptsPayload = {
   process: string
@@ -100,6 +103,7 @@ type UserType = typeof AddElection
   | typeof Loaded
   | typeof Loading
   | typeof Remove
+  | typeof RemoveElection
   | typeof Reset
   | typeof SearchSetResults
   | typeof Set
@@ -110,6 +114,7 @@ type UserType = typeof AddElection
   | typeof Update
 
 type UserPayload = AddElectionPayload
+  | RemoveElectionPayload
   | RemovePayload
   | SearchSetResultsPayload
   | SetConsumedPayload
@@ -181,6 +186,18 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
         loaded: false,
         loading: true,
       }
+    case RemoveElection: {
+      payload = (action.payload as RemoveElectionPayload)
+      const indexed = {...state.indexed}
+      const user = {...state.user}
+      delete indexed[state.user.userID].elections[payload]
+      delete user.elections[payload]
+      return {
+        ...state,
+        indexed,
+        user,
+      }
+    }
     case Remove: {
       payload = (action.payload as RemovePayload)
       const indexed = {...state.indexed}

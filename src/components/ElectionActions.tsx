@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
   Portal,
   Stack,
-  useColorModeValue,
+  useColorModeValue
 } from '@chakra-ui/react'
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
 import { useUser } from '@hooks/use-user'
@@ -19,7 +19,7 @@ import { If, Then } from 'react-if'
 import UserAuthButton from './user/UserAuthButton'
 
 const ElectionActions = ({election}: {election: Election}) => {
-  const { addAttempt, resetAttempts, setConsumed } = useUser()
+  const { addAttempt, resetAttempts, setConsumed, removeElection } = useUser()
   const [ loading, setLoading ] = useState<boolean>(false)
 
   return (
@@ -79,6 +79,20 @@ const ElectionActions = ({election}: {election: Election}) => {
                   setLoading(false)
                 }}>
                 Set {!!election.consumed && 'NOT'} consumed
+              </Button>
+              <Button
+                size='sm'
+                disabled={loading}
+                colorScheme={useColorModeValue('orange', 'red')}
+                isLoading={loading}
+                onClick={() => {
+                  setLoading(true)
+                  ;(async () => {
+                    await removeElection(election.electionId)
+                  })()
+                  setLoading(false)
+                }}>
+                Remove
               </Button>
             </Stack>
           </PopoverBody>

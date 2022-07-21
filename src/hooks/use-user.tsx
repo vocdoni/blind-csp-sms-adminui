@@ -1,7 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
 import { UserData } from '@localtypes'
-import { formatError } from '@utils'
+import { formatError, processApiResponse } from '@utils'
 import { createContext, ReactNode, useContext, useRef } from 'react'
 import { useApi } from './use-api'
 import {
@@ -9,6 +9,7 @@ import {
   Loaded,
   Loading,
   Remove,
+  RemoveElection,
   Reset,
   SearchSetResults,
   Set,
@@ -65,6 +66,30 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     }
 
     return false
+  }
+
+  const removeElection = async (process: string) => {
+    dispatch({type: Loading})
+    try {
+      await client.get(`/smsapi/delElection/${user.userID}/${process}`).then(processApiResponse)
+      dispatch({
+        type: RemoveElection,
+        payload: process,
+      })
+
+      dispatch({type: Loaded})
+      return true
+    } catch (e) {
+      toast({
+        status: 'error',
+        title: 'Error removing user election',
+        description: formatError(e).message,
+      })
+      console.warn('Error removing user election', e)
+
+      dispatch({type: Loaded})
+      return false
+    }
   }
 
   const search = async (term: string) => {
@@ -389,6 +414,7 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     reset,
     resetAll,
     remove,
+    removeElection,
     resetAttempts,
     search,
     set,
