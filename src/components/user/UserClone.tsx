@@ -4,7 +4,7 @@ import {
   FormControl,
   Heading,
   Input,
-  Stack,
+  Stack
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { useRef } from 'react'

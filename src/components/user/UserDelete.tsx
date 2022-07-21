@@ -9,7 +9,7 @@ import {
   Button,
   Heading,
   Stack,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react'
 import { useUser } from '@hooks/use-user'
 import { useRef } from 'react'

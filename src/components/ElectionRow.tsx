@@ -1,4 +1,4 @@
-import { Stack, Link, Tag, Text } from '@chakra-ui/react'
+import { Link, Stack, Tag, Text } from '@chakra-ui/react'
 import { EXPLORER } from '@constants'
 import { Election } from '@localtypes'
 import ElectionActions from './ElectionActions'

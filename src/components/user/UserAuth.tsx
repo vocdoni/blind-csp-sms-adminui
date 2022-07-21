@@ -10,7 +10,7 @@ import {
   ListItem,
   OrderedList,
   Text,
-  useToast,
+  useToast
 } from '@chakra-ui/react'
 import { useApi } from '@hooks/use-api'
 import { useUser } from '@hooks/use-user'

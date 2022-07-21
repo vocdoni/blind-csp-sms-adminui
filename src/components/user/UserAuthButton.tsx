@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react'
 import { UserAuthProps } from '@localtypes'
 import UserAuth from './UserAuth'
