@@ -11,22 +11,23 @@ import {
   ModalOverlay,
   useDisclosure
 } from '@chakra-ui/react'
-import { useUser } from '@hooks/use-user'
 import { useUserCreate } from '@hooks/use-user-create'
 import { FiUserPlus } from 'react-icons/fi'
-import UserCreate from './UserCreate'
+import UserForm from './UserForm'
 
 const UserCreateButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { set } = useUser()
-  const { create, loading, clear, data: { hash } } = useUserCreate()
+  const { create, loading, clear } = useUserCreate()
 
   const onCreate = async () => {
     if (await create()) {
-      set(hash)
-      clear()
       onClose()
     }
+  }
+
+  const open = () => {
+    clear()
+    onOpen()
   }
 
   return (
@@ -37,7 +38,7 @@ const UserCreateButton = () => {
         variant='ghost'
         title='Create user'
         icon={<FiUserPlus />}
-        onClick={onOpen}
+        onClick={open}
       />
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={!loading}>
         <ModalOverlay />
@@ -45,7 +46,7 @@ const UserCreateButton = () => {
           <ModalHeader>Create user</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <UserCreate create={onCreate} />
+            <UserForm method={onCreate} />
           </ModalBody>
           <ModalFooter>
             <ButtonGroup>

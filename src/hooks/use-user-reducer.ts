@@ -1,5 +1,5 @@
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
-import { Election, UserData } from '@localtypes'
+import { Election, Phone, UserData } from '@localtypes'
 import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
 
 const emptyUser : UserData = {
@@ -29,7 +29,6 @@ export interface UserState {
   clone: (user: string) => Promise<boolean>
   get: (user: string) => Promise<void>
   getAll: () => Promise<string[] | boolean>
-  updatePhone: (phone: string) => Promise<boolean>
   remove: () => Promise<boolean>
   reset: () => void
   resetAll: () => void
@@ -55,7 +54,6 @@ export const UserStateEmpty : UserState = {
   clone: (user) => Promise.reject(false),
   get: (user) => Promise.reject(),
   getAll: () => Promise.reject(false),
-  updatePhone: (phone) => Promise.reject(false),
   remove: () => Promise.reject(false),
   reset: () => {},
   resetAll: () => {},
@@ -77,9 +75,10 @@ export const SetIndexed = 'user:indexed:set'
 export const SetConsumed = 'user:consumed:set'
 export const SetError = 'user:error:set'
 export const SetRemainingAttempts = 'user:remaining_attempts:set'
-export const UpdatePhone = 'user:phone:update'
+export const Update = 'user:update'
 
 type AddElectionPayload = string
+
 type RemovePayload = string
 type SetRemainingAttemptsPayload = {
   process: string
@@ -92,9 +91,9 @@ type SetConsumedPayload = {
 }
 type SetPayload = UserData
 type SetErrorPayload = Error
-type UpdatePhonePayload = {
-  prefix: number
-  national: number
+type UpdatePayload = {
+  phone: Phone
+  extra?: string
 }
 
 type UserType = typeof AddElection
@@ -108,15 +107,16 @@ type UserType = typeof AddElection
   | typeof SetConsumed
   | typeof SetError
   | typeof SetRemainingAttempts
-  | typeof UpdatePhone
+  | typeof Update
 
 type UserPayload = AddElectionPayload
+  | RemovePayload
   | SearchSetResultsPayload
   | SetConsumedPayload
   | SetErrorPayload
   | SetPayload
   | SetRemainingAttemptsPayload
-  | UpdatePhonePayload
+  | UpdatePayload
 
 export type UserAction = {
   type: UserType
@@ -139,15 +139,15 @@ const setIndexedValue = (indexed: Indexed, process: string, field: string, value
 }
 
 const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: UserAction) => {
-  let payload : UserPayload
+  let payload : any
   switch (action.type) {
     case AddElection:
       payload = (action.payload as AddElectionPayload)
-      const newElection = {
+      const newElection : Election = {
         consumed: false,
         electionId: payload,
         remainingAttempts: ATTEMPTS_MAX_DEFAULT,
-      } as Election
+      }
       return {
         ...state,
         loading: false,
@@ -288,29 +288,26 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
           },
         }
       }
-    case UpdatePhone:
-      payload = (action.payload as UpdatePhonePayload)
+    case Update: {
+      payload = (action.payload as UpdatePayload)
+      const user : UserData = {
+        ...state.user,
+        phone: payload.phone,
+      }
+      if (payload.extra) {
+        user.extraData = payload.extra
+      }
+
       return {
         ...state,
         indexed: {
           ...state.indexed,
-          [state.user.userID]: {
-            ...state.indexed[state.user.userID],
-            phone: {
-              country_code: payload.prefix,
-              national_number: payload.national,
-            },
-          }
+          [state.user.userID]: user,
         },
         loading: false,
-        user: {
-          ...state.user,
-          phone: {
-            country_code: payload.prefix,
-            national_number: payload.national,
-          },
-        }
+        user,
       }
+    }
   }
 
   return state

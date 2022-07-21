@@ -16,7 +16,6 @@ import {
   SetError,
   SetIndexed,
   SetRemainingAttempts,
-  UpdatePhone,
   UserState,
   UserStateEmpty,
   useUserReducer
@@ -275,54 +274,6 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     return false
   }
 
-  const setUserData = async (data: {extra?: string, phone?: string}) => {
-    dispatch({type: Loading})
-    try {
-      const response = await client.post(`/smsapi/setUserData/${user.userID}`, data)
-      if (response.data.ok !== 'true') {
-        throw new Error('API returned KO')
-      }
-
-      dispatch({type: Loaded})
-
-      return response.data
-    } catch (e) {
-      dispatch({type: Loaded})
-
-      throw e
-    }
-  }
-
-  const updatePhone = async (phone: string) => {
-    try {
-      await setUserData({phone})
-
-      dispatch({
-        type: UpdatePhone,
-        payload: {
-          // note this dirty trick is only to show the data in the UI
-          prefix: parseInt(phone.substring(1, 3), 10),
-          national: parseInt(phone.substring(3), 10),
-        }
-      })
-      toast({
-        status: 'success',
-        title: 'Phone has been updated',
-      })
-
-      return true
-    } catch (e) {
-      toast({
-        status: 'error',
-        title: 'Could not update phone',
-        description: formatError(e).message,
-      })
-      console.warn('Could not update phone', e)
-    }
-
-    return false
-  }
-
   const reset = () => {
     dispatch({type: Reset})
     if (!state.hashRef.current) return
@@ -442,7 +393,6 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
     search,
     set,
     setConsumed,
-    updatePhone,
     dispatch,
   }
   return (

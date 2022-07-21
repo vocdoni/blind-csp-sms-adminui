@@ -5,7 +5,7 @@ type Election = {
   electionId: string
   remainingAttempts: number
   consumed: boolean
-  challenge: number
+  challenge?: number
 }
 
 type Phone = {
@@ -34,4 +34,13 @@ type UserSearchResultRowProps = {
 
 type UserAuthProps = {
   election: Election
+}
+
+type UpdatableData = {
+  extra?: string
+  phone: string
+}
+
+type UserFormStateData = UpdatableData & {
+  hash: string
 }

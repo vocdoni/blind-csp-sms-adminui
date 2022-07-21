@@ -1,13 +1,16 @@
 import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react'
 import { useUserCreate } from '@hooks/use-user-create'
+import { UserFormStateData } from '@localtypes'
 import { enterCallback } from '@utils'
-import { ChangeEvent, useRef } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { Unless } from 'react-if'
 
 
-const UserCreate = ({create}: {create: () => void}) => {
+const UserForm = ({method, defaults}: {method: () => void, defaults?: UserFormStateData}) => {
   const extraRef = useRef<HTMLInputElement>(null)
   const hashRef = useRef<HTMLInputElement>(null)
   const phoneRef = useRef<HTMLInputElement>(null)
+  const [ hiddenHash, setHiddenHash ] = useState<boolean>(false)
   const { data, setData } = useUserCreate()
 
   const onChange = (e: ChangeEvent<HTMLInputElement>, field: string) => {
@@ -21,20 +24,30 @@ const UserCreate = ({create}: {create: () => void}) => {
     })
   }
 
+  // Set defaults if set
+  useEffect(() => {
+    if (!defaults || hiddenHash) return
+
+    setData(defaults)
+    setHiddenHash(true)
+  }, [data, defaults, hiddenHash, setData])
+
   return (
     <>
       <VStack>
-        <FormControl id='hash'>
-          <FormLabel>User hash</FormLabel>
-          <Input
-            type='text'
-            placeholder='abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe2'
-            ref={hashRef}
-            onChange={(e) => onChange(e, 'hash')}
-            onKeyUp={(e) => enterCallback(e, create)}
-            value={data?.hash}
-          />
-        </FormControl>
+        <Unless condition={hiddenHash}>
+          <FormControl id='hash'>
+            <FormLabel>User hash</FormLabel>
+            <Input
+              type='text'
+              placeholder='abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe23abe2'
+              ref={hashRef}
+              onChange={(e) => onChange(e, 'hash')}
+              onKeyUp={(e) => enterCallback(e, method)}
+              value={data?.hash}
+            />
+          </FormControl>
+        </Unless>
         <FormControl id='phone'>
           <FormLabel>Phone</FormLabel>
           <Input
@@ -42,7 +55,7 @@ const UserCreate = ({create}: {create: () => void}) => {
             placeholder='+34623696969'
             ref={phoneRef}
             onChange={(e) => onChange(e, 'phone')}
-            onKeyUp={(e) => enterCallback(e, create)}
+            onKeyUp={(e) => enterCallback(e, method)}
             value={data?.phone}
           />
         </FormControl>
@@ -53,7 +66,7 @@ const UserCreate = ({create}: {create: () => void}) => {
             placeholder='the quick brown fox jumps over the lazy dog'
             ref={extraRef}
             onChange={(e) => onChange(e, 'extra')}
-            onKeyUp={(e) => enterCallback(e, create)}
+            onKeyUp={(e) => enterCallback(e, method)}
             value={data?.extra || ''}
           />
         </FormControl>
@@ -62,4 +75,4 @@ const UserCreate = ({create}: {create: () => void}) => {
   )
 }
 
-export default UserCreate
+export default UserForm
