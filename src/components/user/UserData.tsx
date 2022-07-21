@@ -16,6 +16,7 @@ import UserClone from './UserClone'
 import UserCreateButton from './UserCreateButton'
 import UserDataDisplay from './UserDataDisplay'
 import UserDelete from './UserDelete'
+import UserEdit from './UserEdit'
 import UserElectionAdd from './UserElectionAdd'
 import UserPhoneUpdate from './UserPhoneUpdate'
 
@@ -24,41 +25,42 @@ const UserData = ({dataRef}: {dataRef: RefObject<HTMLDivElement>}) => {
 
   return (
     <Stack ref={dataRef}>
-      <Stack direction='row'>
-        <FormControl id='user' isInvalid={error !== null}>
-          <InputGroup>
-            <Input
-              type='text'
-              placeholder='User hash'
-              pr='6.5rem'
-              ref={hashRef}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                set(e.target.value)
-              }
-            />
-            <InputRightElement w='6.5rem'>
-              <Button onClick={reset} rightIcon={<DeleteIcon />} size='xs' mr={1}>
-                Clear data
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          <FormErrorMessage>{error?.message}</FormErrorMessage>
-        </FormControl>
-        <UserCreateProvider>
+      <UserCreateProvider>
+        <Stack direction='row'>
+          <FormControl id='user' isInvalid={error !== null}>
+            <InputGroup>
+              <Input
+                type='text'
+                placeholder='User hash'
+                pr='6.5rem'
+                ref={hashRef}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  set(e.target.value)
+                }
+              />
+              <InputRightElement w='6.5rem'>
+                <Button onClick={reset} rightIcon={<DeleteIcon />} size='xs' mr={1}>
+                  Clear data
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{error?.message}</FormErrorMessage>
+          </FormControl>
           <UserCreateButton />
-        </UserCreateProvider>
-      </Stack>
-      <If condition={user.userID.length > 0}>
-        <Then>
-          <UserDataDisplay user={user} />
-          <Stack spacing={6}>
-            <UserPhoneUpdate />
-            <UserElectionAdd />
-            <UserClone />
-            <UserDelete />
-          </Stack>
-        </Then>
-      </If>
+        </Stack>
+        <If condition={user.userID.length > 0}>
+          <Then>
+            <UserDataDisplay user={user} />
+            <UserEdit />
+            <Stack spacing={6}>
+              <UserPhoneUpdate />
+              <UserElectionAdd />
+              <UserClone />
+              <UserDelete />
+            </Stack>
+          </Then>
+        </If>
+      </UserCreateProvider>
     </Stack>
   )
 }

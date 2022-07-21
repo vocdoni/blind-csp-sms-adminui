@@ -35,3 +35,12 @@ type UserSearchResultRowProps = {
 type UserAuthProps = {
   election: Election
 }
+
+type UpdatableData = {
+  extra?: string
+  phone: string
+}
+
+type UserFormStateData = UpdatableData & {
+  hash: string
+}

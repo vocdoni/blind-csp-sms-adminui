@@ -1,4 +1,5 @@
-import { Box, Heading, Tag, useColorMode, VStack } from '@chakra-ui/react'
+import { Box, Button, Heading, Tag, useColorMode, VStack } from '@chakra-ui/react'
+import { useUserCreate } from '@hooks/use-user-create'
 import { UserData } from '@localtypes'
 import { hidePhoneNumber } from '@utils'
 import { Else, If, Then } from 'react-if'
@@ -6,6 +7,7 @@ import ElectionRow from '../ElectionRow'
 
 const UserDataDisplay = ({user}: {user: UserData }) => {
   const { colorMode } = useColorMode()
+  const { edit } = useUserCreate()
 
   const phone = '+' + user.phone.country_code + hidePhoneNumber(user.phone.national_number.toString())
 
@@ -18,6 +20,7 @@ const UserDataDisplay = ({user}: {user: UserData }) => {
       <Box>
         <Heading size='xs'>Phone</Heading>
         {phone}
+        <Button onClick={edit.onOpen}>edit</Button>
       </Box>
       <If condition={user.extraData}>
         <Then>

@@ -1,5 +1,5 @@
 import { ATTEMPTS_MAX_DEFAULT } from '@constants'
-import { Election, UserData } from '@localtypes'
+import { Election, Phone, UserData } from '@localtypes'
 import { createRef, Dispatch, Reducer, RefObject, useReducer } from 'react'
 
 const emptyUser : UserData = {
@@ -77,9 +77,11 @@ export const SetIndexed = 'user:indexed:set'
 export const SetConsumed = 'user:consumed:set'
 export const SetError = 'user:error:set'
 export const SetRemainingAttempts = 'user:remaining_attempts:set'
+export const Update = 'user:update'
 export const UpdatePhone = 'user:phone:update'
 
 type AddElectionPayload = string
+
 type RemovePayload = string
 type SetRemainingAttemptsPayload = {
   process: string
@@ -92,6 +94,10 @@ type SetConsumedPayload = {
 }
 type SetPayload = UserData
 type SetErrorPayload = Error
+type UpdatePayload = {
+  phone: Phone
+  extra?: string
+}
 type UpdatePhonePayload = {
   prefix: number
   national: number
@@ -108,6 +114,7 @@ type UserType = typeof AddElection
   | typeof SetConsumed
   | typeof SetError
   | typeof SetRemainingAttempts
+  | typeof Update
   | typeof UpdatePhone
 
 type UserPayload = AddElectionPayload
@@ -116,6 +123,7 @@ type UserPayload = AddElectionPayload
   | SetErrorPayload
   | SetPayload
   | SetRemainingAttemptsPayload
+  | UpdatePayload
   | UpdatePhonePayload
 
 export type UserAction = {
@@ -288,6 +296,26 @@ const userReducer : Reducer<UserState, UserAction> = (state: UserState, action: 
           },
         }
       }
+    // case Update: {
+    //   payload = (action.payload as UpdatePayload)
+    //   const user : UserData = {
+    //     ...state.user,
+    //     phone: payload.phone,
+    //   }
+    //   if (payload.extra) {
+    //     user.extraData = payload.extra
+    //   }
+
+    //   return {
+    //     ...state,
+    //     indexed: {
+    //       ...state.indexed,
+    //       [state.user.userID]: user,
+    //     },
+    //     loading: false,
+    //     user,
+    //   }
+    // }
     case UpdatePhone:
       payload = (action.payload as UpdatePhonePayload)
       return {
